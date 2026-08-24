@@ -22,8 +22,8 @@ export const AdminLoginPage: React.FC = () => {
 
   const adminLogin = useStore((state) => state.adminLogin);
 
-  const [email, setEmail] = useState('admin@veyra.luxury');
-  const [password, setPassword] = useState('atelier_admin_2026');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -199,7 +199,7 @@ export const AdminLoginPage: React.FC = () => {
         )}
 
         {/* Login Form */}
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.15rem' }}>
+        <form onSubmit={handleSubmit} autoComplete="off" style={{ display: 'flex', flexDirection: 'column', gap: '1.15rem' }}>
           <div>
             <label style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-primary)', display: 'block', marginBottom: '0.4rem' }}>
               Atelier Email Address
@@ -209,9 +209,10 @@ export const AdminLoginPage: React.FC = () => {
               <input
                 type="email"
                 required
+                autoComplete="off"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@veyra.luxury"
+                placeholder="Enter any email (e.g. admin@veyra.luxury)"
                 style={{
                   width: '100%',
                   padding: '0.75rem 1rem 0.75rem 2.8rem',
@@ -235,9 +236,10 @@ export const AdminLoginPage: React.FC = () => {
               <input
                 type="password"
                 required
+                autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••••••"
+                placeholder="Enter any password"
                 style={{
                   width: '100%',
                   padding: '0.75rem 1rem 0.75rem 2.8rem',

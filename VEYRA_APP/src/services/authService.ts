@@ -364,26 +364,22 @@ class AuthService {
   }
 
   /**
-   * Admin Login with specific role validation
+   * Admin Login with flexible role assignment allowing anyone to log in
    */
-  public async loginAdmin(email: string, pass: string): Promise<AuthResponse> {
-    await new Promise((r) => setTimeout(r, 500));
+  public async loginAdmin(email: string, _pass: string): Promise<AuthResponse> {
+    await new Promise((r) => setTimeout(r, 300));
 
     const emailClean = email.trim().toLowerCase();
-    if (!emailClean || !pass || pass.length < 5) {
-      return { success: false, error: 'Please enter valid administrative credentials.' };
+    if (!emailClean) {
+      return { success: false, error: 'Please enter an email address to log in.' };
     }
 
-    // Role-based credential presets
+    // Role-based credential presets or flexible super_admin fallback
     let role: AdminRole = 'super_admin';
     let name = 'Master Atelier Admin';
     let adminId = 'adm_001';
 
-    if (emailClean === 'admin@veyra.luxury' || emailClean.includes('super')) {
-      role = 'super_admin';
-      name = 'Master Atelier Super Admin';
-      adminId = 'adm_001';
-    } else if (emailClean === 'pm@veyra.luxury' || emailClean.includes('product')) {
+    if (emailClean === 'pm@veyra.luxury' || emailClean.includes('pm') || emailClean.includes('product')) {
       role = 'product_manager';
       name = 'Julian Vance (Product Lead)';
       adminId = 'adm_002';
@@ -391,14 +387,20 @@ class AuthService {
       role = 'order_manager';
       name = 'Sophie Laurent (Fulfillment Director)';
       adminId = 'adm_003';
+    } else if (emailClean === 'admin@veyra.luxury' || emailClean.includes('super') || emailClean.includes('admin')) {
+      role = 'super_admin';
+      name = 'Master Atelier Super Admin';
+      adminId = 'adm_001';
     } else {
-      // General admin match
-      const found = this.users.find((u) => u.email.toLowerCase() === emailClean && u.role !== 'customer');
-      if (found) {
-        role = found.role as AdminRole;
-        name = found.name;
-        adminId = found.id;
-      }
+      // Any custom email provided gets Super Admin permissions
+      const prefix = emailClean.split('@')[0].replace(/[._-]/g, ' ');
+      const capitalized = prefix
+        .split(' ')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+      name = capitalized ? `${capitalized} (Atelier Admin)` : 'Atelier Administrator';
+      adminId = `adm_${Math.random().toString(36).substring(2, 8)}`;
+      role = 'super_admin';
     }
 
     const adminUser: User = {
