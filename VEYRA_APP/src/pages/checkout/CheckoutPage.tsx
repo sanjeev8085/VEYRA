@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
 import { Order, Address } from '../../types';
-import { ShieldCheck, Lock } from 'lucide-react';
+import { ShieldCheck, Lock, UserCheck } from 'lucide-react';
+import { notifyOrderPlaced, notifyPaymentReceived } from '../../services/notificationService';
+
 
 export const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
   const cart = useStore((state) => state.cart);
   const user = useStore((state) => state.user);
+  const isAuthenticated = useStore((state) => state.isAuthenticated);
   const addresses = useStore((state) => state.addresses);
   const addOrder = useStore((state) => state.addOrder);
   const clearCart = useStore((state) => state.clearCart);
+  const registerCustomer = useStore((state) => state.registerCustomer);
 
   const getCartSubtotal = useStore((state) => state.getCartSubtotal);
   const getCartDiscount = useStore((state) => state.getCartDiscount);
@@ -24,12 +28,15 @@ export const CheckoutPage: React.FC = () => {
   // Form states
   const [fullName, setFullName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
-  const [phone] = useState(addresses[0]?.phone || '+91 98765 43210');
+  const [phone, setPhone] = useState(addresses[0]?.phone || '+91 98765 43210');
   const [street, setStreet] = useState(addresses[0]?.street || '42 Mayfair Boulevard, Penthouse 8B');
   const [city, setCity] = useState(addresses[0]?.city || 'Mumbai');
   const [stateName, setStateName] = useState(addresses[0]?.state || 'Maharashtra');
   const [postalCode, setPostalCode] = useState(addresses[0]?.postalCode || '400001');
   const [paymentMethod, setPaymentMethod] = useState<'credit_card' | 'upi' | 'net_banking' | 'cod'>('credit_card');
+  const [createAccount, setCreateAccount] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+
 
   const subtotal = getCartSubtotal();
   const discount = getCartDiscount();
@@ -106,8 +113,19 @@ export const CheckoutPage: React.FC = () => {
       updatedAt: new Date().toISOString(),
     };
 
+    if (createAccount && newPassword && !isAuthenticated) {
+      registerCustomer({
+        name: fullName,
+        email,
+        password: newPassword,
+        phone,
+      }).catch((e) => console.error('Auto registration failed:', e));
+    }
+
     setTimeout(() => {
       addOrder(newOrder);
+      notifyOrderPlaced(newOrder);
+      notifyPaymentReceived(newOrder);
       clearCart();
       setIsProcessing(false);
       navigate(`/order-confirmation/${newOrder.id}`);
@@ -117,6 +135,38 @@ export const CheckoutPage: React.FC = () => {
   return (
     <div style={{ paddingTop: '96px', minHeight: '100vh', paddingBottom: '6rem' }}>
       <div className="container">
+        {/* Guest vs VIP Banner */}
+        {!isAuthenticated && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '0.85rem 1.25rem',
+              borderRadius: 'var(--radius-md)',
+              background: 'rgba(212, 175, 55, 0.08)',
+              border: '1px solid var(--border-gold)',
+              marginBottom: '2rem',
+              flexWrap: 'wrap',
+              gap: '0.75rem',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+              <UserCheck size={18} color="var(--accent-gold)" />
+              <span style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+                Checking out as <strong>Guest</strong>. Have a VIP Client account?
+              </span>
+            </div>
+            <Link
+              to="/auth/login?redirect=/checkout"
+              className="btn btn-outline"
+              style={{ padding: '0.35rem 0.85rem', fontSize: '0.78rem', minHeight: 'unset' }}
+            >
+              Sign In for VIP Privileges
+            </Link>
+          </div>
+        )}
+
         <div style={{ marginBottom: '2.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '1.5rem' }}>
           <span style={{ fontSize: '0.8rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--accent-gold)', fontWeight: 700 }}>
             Secure Checkout
@@ -125,6 +175,7 @@ export const CheckoutPage: React.FC = () => {
             Atelier Checkout
           </h1>
         </div>
+
 
         <div
           style={{
@@ -168,6 +219,17 @@ export const CheckoutPage: React.FC = () => {
                   />
                 </div>
                 <div style={{ gridColumn: 'span 2' }}>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>Phone Number</label>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+91 98765 43210"
+                    style={{ width: '100%', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-light)', borderRadius: 'var(--radius-sm)', color: '#fff', outline: 'none' }}
+                  />
+                </div>
+
+                <div style={{ gridColumn: 'span 2' }}>
                   <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>Street Address</label>
                   <input
                     type="text"
@@ -205,7 +267,50 @@ export const CheckoutPage: React.FC = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Optional Guest-to-VIP Account Creation */}
+              {!isAuthenticated && (
+                <div style={{ marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border-subtle)' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 600 }}>
+                    <input
+                      type="checkbox"
+                      checked={createAccount}
+                      onChange={(e) => setCreateAccount(e.target.checked)}
+                      style={{ accentColor: 'var(--accent-gold)' }}
+                    />
+                    <span>Create a VIP Atelier Account to track orders and save bespoke measurements</span>
+                  </label>
+
+                  {createAccount && (
+                    <div style={{ marginTop: '0.85rem', maxWidth: '350px' }}>
+                      <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
+                        Set Account Password
+                      </label>
+                      <div style={{ position: 'relative' }}>
+                        <Lock size={15} color="var(--text-muted)" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
+                        <input
+                          type="password"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          placeholder="Min 8 characters"
+                          style={{
+                            width: '100%',
+                            padding: '0.65rem 0.75rem 0.65rem 2.4rem',
+                            background: 'rgba(255,255,255,0.06)',
+                            border: '1px solid var(--border-gold)',
+                            borderRadius: 'var(--radius-sm)',
+                            color: '#fff',
+                            fontSize: '0.825rem',
+                            outline: 'none',
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
+
 
             {/* Step 2: Payment Gateway Selection */}
             <div className="glass-panel" style={{ padding: '2rem' }}>

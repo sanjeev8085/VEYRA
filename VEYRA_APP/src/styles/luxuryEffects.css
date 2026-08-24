@@ -1,0 +1,137 @@
+/**
+ * VEYRA Haute Couture — Luxury Editorial Polish & Micro-Interactions (VEYRA-066)
+ * Glassmorphic sheen, gold shimmer, magnetic button cues, and optical typography refinements.
+ */
+
+/* ==========================================================================
+   1. GLASSMORPHIC SHEEN & HOVER REFLECTIONS
+   ========================================================================== */
+
+.glass-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-sheen::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 45%,
+    rgba(212, 175, 55, 0.12) 50%,
+    rgba(255, 255, 255, 0.04) 55%,
+    transparent 100%
+  );
+  transform: rotate(30deg) translateY(-120%);
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.glass-sheen:hover::after {
+  transform: rotate(30deg) translateY(120%);
+}
+
+/* ==========================================================================
+   2. BUTTON GOLD SHIMMER & MAGNETIC HOVER ACCENTS
+   ========================================================================== */
+
+.btn-gold-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #d4af37 0%, #b8860b 50%, #8c6508 100%);
+  color: #ffffff !important;
+  box-shadow: 0 4px 20px rgba(184, 134, 11, 0.25);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-gold-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  transition: left 0.75s ease;
+}
+
+.btn-gold-shimmer:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(212, 175, 55, 0.45);
+}
+
+.btn-gold-shimmer:hover::before {
+  left: 140%;
+}
+
+.btn-gold-shimmer:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* ==========================================================================
+   3. HAUTE COUTURE GOLD RING LOADERS & PULSE EFFECTS
+   ========================================================================== */
+
+@keyframes goldPulseGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(212, 175, 55, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+  }
+}
+
+.gold-pulse-indicator {
+  animation: goldPulseGlow 2.4s infinite cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Subtle luxury backdrop blur transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s var(--ease-luxury), transform 0.4s var(--ease-luxury);
+}
+
+/* ==========================================================================
+   4. OPTICAL TYPOGRAPHY KERNING & EDITORIAL POLISH
+   ========================================================================== */
+
+h1, h2, h3, .font-display {
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'liga';
+}
+
+.editorial-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-full);
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  color: var(--accent-gold);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}

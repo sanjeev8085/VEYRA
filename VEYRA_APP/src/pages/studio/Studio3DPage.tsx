@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { ThreeCanvas } from '../../components/three/ThreeCanvas';
 import { ViewportControls } from '../../components/three/ViewportControls';
+import { FallbackGallery } from '../../components/product/FallbackGallery';
 import { SEED_AVATARS } from '../../data/seedData';
 import { useStore } from '../../store/useStore';
-import { ShoppingBag, Sparkles, User, Layers, Palette, RotateCw } from 'lucide-react';
+import { ShoppingBag, Sparkles, User, Layers, Palette, RotateCw, Eye, Box } from 'lucide-react';
 
 export const Studio3DPage: React.FC = () => {
   const activeAvatarId = useStore((state) => state.activeAvatarId);
@@ -11,10 +12,11 @@ export const Studio3DPage: React.FC = () => {
   const addToCart = useStore((state) => state.addToCart);
   const products = useStore((state) => state.products);
 
-  // Active outfit pieces
+  // Active outfit pieces & view mode
   const [activeCategory, setActiveCategory] = useState<'t-shirts' | 'shirts' | 'jackets' | 'trousers'>('t-shirts');
   const [selectedGarmentColor, setSelectedGarmentColor] = useState('#6c8a66');
   const [selectedGarmentColorName, setSelectedGarmentColorName] = useState('Botanical Sage');
+  const [viewFormat, setViewFormat] = useState<'3d' | 'lookbook360'>('3d');
 
   // Selected avatar object
   const currentAvatar = SEED_AVATARS.find((a) => a.id === activeAvatarId) || SEED_AVATARS[0];
@@ -64,38 +66,111 @@ export const Studio3DPage: React.FC = () => {
             overflow: 'hidden',
           }}
         >
-          {/* Main Canvas Scene */}
-          <ThreeCanvas
-            garmentType={activeCategory}
-            garmentColorHex={selectedGarmentColor}
-            isFemale={isFemale}
-          />
+          {viewFormat === '3d' ? (
+            <>
+              {/* Main Canvas Scene */}
+              <ThreeCanvas
+                garmentType={activeCategory}
+                garmentColorHex={selectedGarmentColor}
+                isFemale={isFemale}
+              />
 
-          {/* Viewport Controls */}
-          <ViewportControls />
+              {/* Viewport Controls */}
+              <ViewportControls />
 
-          {/* Silhouette Badge */}
+              {/* Silhouette Badge */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '1.25rem',
+                  left: '1.25rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.6rem',
+                  padding: '0.45rem 1rem',
+                  borderRadius: 'var(--radius-full)',
+                  background: 'var(--bg-glass)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid var(--border-subtle)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  zIndex: 10,
+                }}
+              >
+                <RotateCw size={13} />
+                <span>Fitting: {currentAvatar.name.split('—')[0]}</span>
+              </div>
+            </>
+          ) : (
+            <FallbackGallery
+              garmentType={activeCategory}
+              garmentColorHex={selectedGarmentColor}
+              garmentColorName={selectedGarmentColorName}
+              productName={selectedProduct?.name}
+              height="100%"
+              onSwitchTo3D={() => setViewFormat('3d')}
+              canSwitchTo3D={true}
+            />
+          )}
+
+          {/* Mode Switcher on Top Right */}
           <div
             style={{
               position: 'absolute',
               top: '1.25rem',
-              left: '1.25rem',
+              right: '1.25rem',
+              zIndex: 25,
               display: 'flex',
-              alignItems: 'center',
-              gap: '0.6rem',
-              padding: '0.45rem 1rem',
-              borderRadius: 'var(--radius-full)',
-              background: 'var(--bg-glass)',
+              background: 'rgba(10, 10, 14, 0.8)',
               backdropFilter: 'blur(12px)',
+              padding: '3px',
+              borderRadius: 'var(--radius-full)',
               border: '1px solid var(--border-subtle)',
-              color: 'var(--text-primary)',
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              zIndex: 10,
             }}
           >
-            <RotateCw size={13} />
-            <span>Fitting: {currentAvatar.name.split('—')[0]}</span>
+            <button
+              onClick={() => setViewFormat('3d')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                padding: '0.35rem 0.75rem',
+                borderRadius: 'var(--radius-full)',
+                background: viewFormat === '3d' ? 'var(--accent-gold)' : 'transparent',
+                color: viewFormat === '3d' ? '#fff' : 'var(--text-muted)',
+                border: 'none',
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+              }}
+              title="Interactive 3D WebGL Canvas"
+            >
+              <Box size={13} />
+              <span>3D Atelier</span>
+            </button>
+            <button
+              onClick={() => setViewFormat('lookbook360')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                padding: '0.35rem 0.75rem',
+                borderRadius: 'var(--radius-full)',
+                background: viewFormat === 'lookbook360' ? 'var(--accent-gold)' : 'transparent',
+                color: viewFormat === 'lookbook360' ? '#fff' : 'var(--text-muted)',
+                border: 'none',
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+              }}
+              title="High-Res 360° Studio Lookbook"
+            >
+              <Eye size={13} />
+              <span>360° Photo</span>
+            </button>
           </div>
         </div>
 

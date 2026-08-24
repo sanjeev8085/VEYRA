@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { CartItem, Product, User, Address, Order, Coupon, AdminAuthSession } from '../types';
+import { CartItem, Product, User, Address, Order, Coupon, AdminAuthSession, LoginCredentials, RegisterData, AuthSession } from '../types';
 import { SEED_PRODUCTS, SEED_COUPONS } from '../data/seedData';
+import { authService } from '../services/authService';
 
 export interface ToastMessage {
   id: string;
@@ -20,13 +21,21 @@ export interface HomepageHeroSettings {
 interface VeyraState {
   // Authentication & Customer Session
   user: User | null;
+  customerSession: AuthSession | null;
   isAuthenticated: boolean;
   addresses: Address[];
   setUser: (user: User | null) => void;
+  loginCustomer: (credentials: LoginCredentials) => Promise<{ success: boolean; error?: string }>;
+  registerCustomer: (data: RegisterData) => Promise<{ success: boolean; error?: string }>;
+  logoutCustomer: () => void;
+  updateCustomerProfile: (data: Partial<User>) => void;
+  changePassword: (oldPass: string, newPass: string) => Promise<{ success: boolean; error?: string }>;
+  initGuestSession: (name?: string, email?: string) => void;
   addAddress: (address: Address) => void;
   updateAddress: (id: string, address: Partial<Address>) => void;
   deleteAddress: (id: string) => void;
   setDefaultAddress: (id: string) => void;
+
 
   // Customers CRM
   customers: User[];
@@ -37,6 +46,7 @@ interface VeyraState {
   isAdminAuthenticated: boolean;
   adminLogin: (email: string, pass: string) => Promise<{ success: boolean; error?: string }>;
   adminLogout: () => void;
+
 
   // Product Catalog CRUD & Inventory Matrix State
   products: Product[];
@@ -62,6 +72,7 @@ interface VeyraState {
   cart: CartItem[];
   appliedCoupon: Coupon | null;
   addToCart: (product: Product, size: string, colorName: string, colorHex: string, quantity?: number) => void;
+  reorderItems: (items: CartItem[]) => void;
   removeFromCart: (cartItemId: string) => void;
   updateCartQuantity: (cartItemId: string, quantity: number) => void;
   applyCoupon: (coupon: Coupon) => void;
@@ -72,6 +83,7 @@ interface VeyraState {
   getCartTax: () => number;
   getCartShipping: () => number;
   getCartTotal: () => number;
+
 
   // Wishlist
   wishlist: string[];
@@ -114,13 +126,25 @@ interface VeyraState {
 export const useStore = create<VeyraState>()(
   persist(
     (set, get) => ({
-      // Customer State
+      // Customer Authentication & Session State
       user: {
         id: 'usr_demo_01',
         name: 'Alexander Vane',
         email: 'alexander@veyra.luxury',
         role: 'customer',
         createdAt: '2026-01-15T00:00:00Z',
+      },
+      customerSession: {
+        token: 'vyr_usr_tok_alexander_vane_demo',
+        user: {
+          id: 'usr_demo_01',
+          name: 'Alexander Vane',
+          email: 'alexander@veyra.luxury',
+          role: 'customer',
+          createdAt: '2026-01-15T00:00:00Z',
+        },
+        issuedAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
       },
       isAuthenticated: true,
       addresses: [
@@ -137,7 +161,81 @@ export const useStore = create<VeyraState>()(
           isDefault: true,
         },
       ],
-      setUser: (user) => set({ user, isAuthenticated: !!user }),
+      setUser: (user) => set({ user, isAuthenticated: !!user && !user.isGuest }),
+
+      loginCustomer: async (credentials) => {
+        const res = await authService.loginCustomer(credentials);
+        if (res.success && res.user && res.session) {
+          set({
+            user: res.user,
+            customerSession: res.session,
+            isAuthenticated: true,
+          });
+          get().addToast('success', 'Welcome Back', `Logged in as ${res.user.name}`);
+          return { success: true };
+        }
+        return { success: false, error: res.error || 'Authentication failed' };
+      },
+
+      registerCustomer: async (data) => {
+        const res = await authService.registerCustomer(data);
+        if (res.success && res.user && res.session) {
+          set((state) => ({
+            user: res.user,
+            customerSession: res.session,
+            isAuthenticated: true,
+            customers: [res.user!, ...state.customers],
+          }));
+          get().addToast('success', 'VIP Registration Complete', `Welcome to the VEYRA Atelier, ${res.user.name}`);
+          return { success: true };
+        }
+        return { success: false, error: res.error || 'Registration failed' };
+      },
+
+      logoutCustomer: () => {
+        set({
+          user: null,
+          customerSession: null,
+          isAuthenticated: false,
+        });
+        get().addToast('info', 'Signed Out', 'You have been safely signed out.');
+      },
+
+      updateCustomerProfile: (data) => {
+        set((state) => {
+          if (!state.user) return state;
+          const updatedUser = { ...state.user, ...data };
+          return {
+            user: updatedUser,
+            customers: state.customers.map((c) => (c.id === updatedUser.id ? { ...c, ...data } : c)),
+          };
+        });
+        get().addToast('success', 'Profile Updated', 'Your profile details have been saved.');
+      },
+
+      changePassword: async (oldPass, newPass) => {
+        const user = get().user;
+        if (!user || !user.email) {
+          return { success: false, error: 'User is not authenticated' };
+        }
+        const res = await authService.changePassword(user.email, oldPass, newPass);
+        if (res.success) {
+          get().addToast('success', 'Password Updated', 'Your account password has been updated securely.');
+          return { success: true };
+        }
+        return { success: false, error: res.error || 'Failed to update password.' };
+      },
+
+
+      initGuestSession: (name = 'Guest Client', email = 'guest@veyra.luxury') => {
+        const guestUser = authService.createGuestUser(name, email);
+        set({
+          user: guestUser,
+          customerSession: null,
+          isAuthenticated: false,
+        });
+      },
+
       addAddress: (address) =>
         set((state) => ({
           addresses: [...state.addresses, address],
@@ -198,38 +296,26 @@ export const useStore = create<VeyraState>()(
           role: 'super_admin',
           createdAt: '2026-01-01T00:00:00Z',
         },
+        issuedAt: new Date().toISOString(),
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
       },
       isAdminAuthenticated: true,
 
       adminLogin: async (email, password) => {
-        await new Promise((r) => setTimeout(r, 600));
-
-        if (!email || !password || password.length < 6) {
-          return { success: false, error: 'Invalid email or password credentials. Minimum 6 characters.' };
+        const res = await authService.loginAdmin(email, password);
+        if (res.success && res.user && res.session) {
+          set({ adminSession: res.session, isAdminAuthenticated: true });
+          get().addToast('success', 'Authentication Successful', `Welcome back, ${res.user.name} (${res.user.role.replace('_', ' ').toUpperCase()})`);
+          return { success: true };
         }
-
-        const session: AdminAuthSession = {
-          token: `vyr_token_${Math.random().toString(36).substring(2, 12)}_${Date.now()}`,
-          user: {
-            id: `adm_${Math.random().toString(36).substring(2, 6)}`,
-            name: email.split('@')[0].toUpperCase(),
-            email,
-            role: 'super_admin',
-            createdAt: new Date().toISOString(),
-          },
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-        };
-
-        set({ adminSession: session, isAdminAuthenticated: true });
-        get().addToast('success', 'Authentication Successful', `Welcome back, ${session.user.name}`);
-        return { success: true };
+        return { success: false, error: res.error || 'Invalid administrative credentials.' };
       },
 
       adminLogout: () => {
         set({ adminSession: null, isAdminAuthenticated: false });
         get().addToast('info', 'Logged Out', 'Admin session terminated securely');
       },
+
 
       // Products CRUD
       products: SEED_PRODUCTS,
@@ -379,6 +465,31 @@ export const useStore = create<VeyraState>()(
 
         get().addToast('success', 'Added to Bag', `${product.name} (${size} · ${colorName})`);
       },
+
+      reorderItems: (items) => {
+        set((state) => {
+          let updatedCart = [...state.cart];
+          items.forEach((item) => {
+            const existingIndex = updatedCart.findIndex(
+              (c) => c.productId === item.productId && c.size === item.size && c.colorHex === item.colorHex
+            );
+            if (existingIndex > -1) {
+              updatedCart[existingIndex] = {
+                ...updatedCart[existingIndex],
+                quantity: updatedCart[existingIndex].quantity + (item.quantity || 1),
+              };
+            } else {
+              updatedCart.push({
+                ...item,
+                id: `cart_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+              });
+            }
+          });
+          return { cart: updatedCart, isCartDrawerOpen: true };
+        });
+        get().addToast('success', 'Items Reordered', `${items.length} item(s) added back to your luxury bag.`);
+      },
+
       removeFromCart: (cartItemId) =>
         set((state) => ({
           cart: state.cart.filter((item) => item.id !== cartItemId),

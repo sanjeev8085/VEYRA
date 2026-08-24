@@ -465,6 +465,7 @@ export const SEED_PRODUCTS: Product[] = [
 
 export const SEED_COUPONS: Coupon[] = [
   {
+    id: 'cpn_summer30',
     code: 'SUMMER30',
     type: 'percentage',
     value: 30,
@@ -473,6 +474,7 @@ export const SEED_COUPONS: Coupon[] = [
     isActive: true,
   },
   {
+    id: 'cpn_welcome10',
     code: 'WELCOME10',
     type: 'percentage',
     value: 10,
@@ -480,6 +482,7 @@ export const SEED_COUPONS: Coupon[] = [
     isActive: true,
   },
   {
+    id: 'cpn_vipluxury',
     code: 'VIPLUXURY',
     type: 'fixed',
     value: 1000,
@@ -488,3 +491,4 @@ export const SEED_COUPONS: Coupon[] = [
     isActive: true,
   },
 ];
+

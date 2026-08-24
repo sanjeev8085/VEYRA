@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import { SEED_PRODUCTS } from '../../data/seedData';
 import { ThreeCanvas } from '../../components/three/ThreeCanvas';
 import { ViewportControls } from '../../components/three/ViewportControls';
+import { FallbackGallery } from '../../components/product/FallbackGallery';
+import { ReviewSection } from '../../components/product/ReviewSection';
 import { useStore } from '../../store/useStore';
 import {
   Heart,
@@ -15,6 +17,8 @@ import {
   Truck,
   ShieldCheck,
   RotateCw,
+  Eye,
+  Box,
 } from 'lucide-react';
 
 import { SEO } from '../../components/common/SEO';
@@ -34,6 +38,7 @@ export const ProductDetailPage: React.FC = () => {
   const [selectedSize, setSelectedSize] = useState(product.variants[0].size);
   const [selectedColorHex, setSelectedColorHex] = useState(product.variants[0].colorHex);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [viewFormat, setViewFormat] = useState<'3d' | 'lookbook360'>('3d');
 
   // Modals & Accordions
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
@@ -116,38 +121,112 @@ export const ProductDetailPage: React.FC = () => {
                 background: 'radial-gradient(circle at center, var(--bg-card) 0%, var(--bg-secondary) 100%)',
               }}
             >
-              {/* Natural Interactive Garment Canvas */}
-              <ThreeCanvas
-                garmentType={product.category}
-                garmentColorHex={selectedColorHex}
-                isFemale={false}
-              />
+              {viewFormat === '3d' ? (
+                <>
+                  {/* Natural Interactive Garment Canvas */}
+                  <ThreeCanvas
+                    garmentType={product.category}
+                    garmentColorHex={selectedColorHex}
+                    isFemale={false}
+                  />
 
-              {/* Viewport Lighting & View Controls */}
-              <ViewportControls />
+                  {/* Viewport Lighting & View Controls */}
+                  <ViewportControls />
 
-              {/* Shade Indicator */}
+                  {/* Drag to Rotate Indicator */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '1.25rem',
+                      left: '1.25rem',
+                      padding: '0.4rem 0.85rem',
+                      borderRadius: 'var(--radius-full)',
+                      background: 'var(--bg-glass)',
+                      backdropFilter: 'blur(12px)',
+                      border: '1px solid var(--border-subtle)',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.4rem',
+                      zIndex: 10,
+                    }}
+                  >
+                    <RotateCw size={13} />
+                    <span>Drag to Rotate 3D</span>
+                  </div>
+                </>
+              ) : (
+                <FallbackGallery
+                  garmentType={product.category}
+                  garmentColorHex={selectedColorHex}
+                  garmentColorName={selectedVariant.colorName}
+                  images={product.images}
+                  productName={product.name}
+                  height="100%"
+                  onSwitchTo3D={() => setViewFormat('3d')}
+                  canSwitchTo3D={true}
+                />
+              )}
+
+              {/* Top Right Mode Toggle Switch (3D Atelier <-> 360° Studio Lookbook) */}
               <div
                 style={{
                   position: 'absolute',
                   top: '1.25rem',
-                  left: '1.25rem',
-                  padding: '0.4rem 0.85rem',
-                  borderRadius: 'var(--radius-full)',
-                  background: 'var(--bg-glass)',
-                  backdropFilter: 'blur(12px)',
-                  border: '1px solid var(--border-subtle)',
-                  color: 'var(--text-primary)',
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
+                  right: '1.25rem',
+                  zIndex: 25,
                   display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  zIndex: 10,
+                  background: 'rgba(10, 10, 14, 0.8)',
+                  backdropFilter: 'blur(12px)',
+                  padding: '3px',
+                  borderRadius: 'var(--radius-full)',
+                  border: '1px solid var(--border-subtle)',
                 }}
               >
-                <RotateCw size={13} />
-                <span>Drag to Rotate</span>
+                <button
+                  onClick={() => setViewFormat('3d')}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                    padding: '0.35rem 0.75rem',
+                    borderRadius: 'var(--radius-full)',
+                    background: viewFormat === '3d' ? 'var(--accent-gold)' : 'transparent',
+                    color: viewFormat === '3d' ? '#fff' : 'var(--text-muted)',
+                    border: 'none',
+                    fontSize: '0.72rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                  }}
+                  title="Interactive 3D WebGL Canvas"
+                >
+                  <Box size={13} />
+                  <span>3D Atelier</span>
+                </button>
+                <button
+                  onClick={() => setViewFormat('lookbook360')}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                    padding: '0.35rem 0.75rem',
+                    borderRadius: 'var(--radius-full)',
+                    background: viewFormat === 'lookbook360' ? 'var(--accent-gold)' : 'transparent',
+                    color: viewFormat === 'lookbook360' ? '#fff' : 'var(--text-muted)',
+                    border: 'none',
+                    fontSize: '0.72rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                  }}
+                  title="High-Res 360° Multi-Angle Lookbook"
+                >
+                  <Eye size={13} />
+                  <span>360° Photo</span>
+                </button>
               </div>
             </div>
 
@@ -392,6 +471,14 @@ export const ProductDetailPage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Customer Reviews & Star Ratings */}
+        <ReviewSection
+          productId={product.id}
+          productName={product.name}
+          initialRating={product.rating}
+          initialReviewCount={product.reviewCount}
+        />
 
         {/* Size Guide Modal */}
         {isSizeGuideOpen && (

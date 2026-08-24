@@ -1,5 +1,19 @@
 export type Role = 'customer' | 'super_admin' | 'product_manager' | 'order_manager';
 
+export type AdminRole = 'super_admin' | 'product_manager' | 'order_manager';
+
+export type Permission =
+  | 'manage_products'
+  | 'delete_products'
+  | 'manage_inventory'
+  | 'manage_orders'
+  | 'view_customers'
+  | 'manage_coupons'
+  | 'manage_cms'
+  | 'manage_settings'
+  | 'manage_admins'
+  | 'view_analytics';
+
 export interface User {
   id: string;
   name: string;
@@ -8,13 +22,45 @@ export interface User {
   avatarUrl?: string;
   phone?: string;
   createdAt: string;
+  isGuest?: boolean;
 }
 
-export interface AdminAuthSession {
+export interface AuthSession {
   token: string;
   user: User;
   expiresAt: string;
+  issuedAt: string;
 }
+
+export type AdminAuthSession = AuthSession;
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+  rememberMe?: boolean;
+}
+
+export interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  user?: User;
+  token?: string;
+  error?: string;
+  session?: AuthSession;
+}
+
+export interface PasswordResetRequest {
+  email: string;
+  token?: string;
+  newPassword?: string;
+}
+
 
 export interface Address {
   id: string;
@@ -213,8 +259,9 @@ export interface Order {
 }
 
 export interface Coupon {
-  id?: string;
+  id: string;
   code: string;
+
   description?: string;
   discountType?: 'percentage' | 'fixed';
   discountValue?: number;
@@ -258,3 +305,58 @@ export interface SkinToneRecommendation {
   avoidColors?: FashionColorOption[];
   matchingProductSlugs?: string[];
 }
+
+export type FitFeedback = 'Runs Small' | 'True to Size' | 'Runs Large';
+
+export interface ProductReview {
+  id: string;
+  productId: string;
+  userId?: string;
+  userName: string;
+  userEmail?: string;
+  rating: number; // 1 - 5
+  title?: string;
+  comment: string;
+  fitFeedback?: FitFeedback;
+  isVerifiedBuyer: boolean;
+  status: 'approved' | 'pending' | 'rejected';
+  helpfulCount: number;
+  createdAt: string;
+}
+
+export type NotificationChannel = 'in_app' | 'email' | 'sms' | 'push';
+
+export type NotificationType =
+  | 'order_placed'
+  | 'payment_received'
+  | 'order_shipped'
+  | 'out_for_delivery'
+  | 'order_delivered'
+  | 'promotion_broadcast'
+  | 'price_drop'
+  | 'return_update';
+
+export interface CustomerNotification {
+  id: string;
+  userId?: string;
+  recipientEmail?: string;
+  recipientName?: string;
+  type: NotificationType;
+  channel: NotificationChannel;
+  title: string;
+  message: string;
+  htmlContent?: string;
+  metadata?: {
+    orderId?: string;
+    orderNumber?: string;
+    trackingNumber?: string;
+    trackingUrl?: string;
+    courierName?: string;
+    promoCode?: string;
+    discountPercent?: number;
+    amount?: number;
+  };
+  isRead: boolean;
+  sentAt: string;
+}
+

@@ -10,7 +10,10 @@ import {
   Sun,
   Moon,
   Sparkles,
+  Bell,
 } from 'lucide-react';
+import { NotificationCenterModal } from '../common/NotificationCenterModal';
+import { getNotifications, subscribeToNotifications } from '../../services/notificationService';
 
 interface HeaderProps {
   onOpenMobileMenu: () => void;
@@ -26,16 +29,27 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
   const setTheme = useStore((state) => state.setTheme);
   const setCartDrawerOpen = useStore((state) => state.setCartDrawerOpen);
   const setSearchOpen = useStore((state) => state.setSearchOpen);
+  const user = useStore((state) => state.user);
+  const isAuthenticated = useStore((state) => state.isAuthenticated);
+
 
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
+  const [notifications, setNotifications] = useState(getNotifications());
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const unsub = subscribeToNotifications((notifs) => setNotifications(notifs));
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      unsub();
+    };
   }, []);
+
+  const unreadNotificationsCount = notifications.filter((n) => !n.isRead).length;
 
   const navLinks = [
     { label: 'T-Shirts', path: '/catalog?category=t-shirts' },
@@ -281,11 +295,12 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
             )}
           </button>
 
-          {/* Account */}
-          <Link
-            to="/account"
+          {/* Notifications Center */}
+          <button
+            onClick={() => setIsNotificationModalOpen(true)}
             className="btn btn-ghost"
             style={{
+              position: 'relative',
               padding: '0.5rem',
               borderRadius: '50%',
               color: 'var(--text-primary)',
@@ -295,12 +310,82 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            aria-label="User account"
+            aria-label="Client Notifications"
+            title="Notifications & Transactional Alerts"
           >
-            <UserIcon size={18} />
+            <Bell size={18} />
+            {unreadNotificationsCount > 0 && (
+              <span
+                style={{
+                  position: 'absolute',
+                  top: '5px',
+                  right: '5px',
+                  background: 'var(--accent-gold)',
+                  color: '#000',
+                  fontSize: '0.62rem',
+                  fontWeight: 800,
+                  width: '15px',
+                  height: '15px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 0 6px rgba(212, 175, 55, 0.5)',
+                }}
+              >
+                {unreadNotificationsCount}
+              </span>
+            )}
+          </button>
+
+          {/* Account */}
+          <Link
+            to={isAuthenticated && user && !user.isGuest ? '/account' : '/auth/login'}
+            className="btn btn-ghost"
+            style={{
+              position: 'relative',
+              padding: '0.4rem',
+              borderRadius: '50%',
+              color: 'var(--text-primary)',
+              minWidth: '40px',
+              minHeight: '40px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            aria-label={isAuthenticated && user && !user.isGuest ? `VIP Account (${user.name})` : 'VIP Sign In'}
+            title={isAuthenticated && user && !user.isGuest ? `VIP Client: ${user.name}` : 'VIP Sign In'}
+          >
+            {isAuthenticated && user && !user.isGuest ? (
+              <div
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, var(--accent-gold) 0%, #b8860b 100%)',
+                  color: '#000',
+                  fontWeight: 800,
+                  fontSize: '0.75rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 0 8px rgba(212, 175, 55, 0.4)',
+                }}
+              >
+                {user.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
+              </div>
+            ) : (
+              <UserIcon size={18} />
+            )}
           </Link>
         </div>
       </div>
+
+      {/* Global Transactional & Status Alerts Modal */}
+      <NotificationCenterModal
+        isOpen={isNotificationModalOpen}
+        onClose={() => setIsNotificationModalOpen(false)}
+      />
     </header>
   );
 };

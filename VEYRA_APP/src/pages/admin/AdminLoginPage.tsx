@@ -1,7 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
-import { ShieldCheck, Lock, Mail, ArrowRight, KeyRound } from 'lucide-react';
+import {
+  ShieldCheck,
+  Lock,
+  Mail,
+  ArrowRight,
+  KeyRound,
+  Shield,
+  Layers,
+  ShoppingBag,
+  Sparkles,
+} from 'lucide-react';
+
+import { AdminRole } from '../../types';
 
 export const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -15,6 +27,46 @@ export const AdminLoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const adminRolesInfo: {
+    role: AdminRole;
+    label: string;
+    email: string;
+    pass: string;
+    icon: typeof Shield;
+    desc: string;
+  }[] = [
+    {
+      role: 'super_admin',
+      label: 'Super Admin',
+      email: 'admin@veyra.luxury',
+      pass: 'atelier_admin_2026',
+      icon: ShieldCheck,
+      desc: 'Full Atelier control (Catalog, Orders, CMS, Inventory, Team)',
+    },
+    {
+      role: 'product_manager',
+      label: 'Product Manager',
+      email: 'pm@veyra.luxury',
+      pass: 'pm_luxury_2026',
+      icon: Layers,
+      desc: 'Catalog CRUD, 3D Assets, Inventory Matrix, Coupons, CMS',
+    },
+    {
+      role: 'order_manager',
+      label: 'Order Manager',
+      email: 'orders@veyra.luxury',
+      pass: 'orders_atelier_2026',
+      icon: ShoppingBag,
+      desc: 'Orders pipeline, fulfillment dispatch, customer CRM',
+    },
+  ];
+
+  const handleRoleSelect = (accEmail: string, accPass: string) => {
+    setEmail(accEmail);
+    setPassword(accPass);
+    setErrorMsg(null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
@@ -26,7 +78,7 @@ export const AdminLoginPage: React.FC = () => {
     if (res.success) {
       navigate(from, { replace: true });
     } else {
-      setErrorMsg(res.error || 'Authentication failed.');
+      setErrorMsg(res.error || 'Authentication failed. Please verify credentials.');
     }
   };
 
@@ -46,7 +98,7 @@ export const AdminLoginPage: React.FC = () => {
         className="glass-panel"
         style={{
           width: '100%',
-          maxWidth: '460px',
+          maxWidth: '480px',
           padding: '2.5rem 2.25rem',
           borderRadius: 'var(--radius-xl)',
           border: '1px solid var(--border-gold)',
@@ -55,7 +107,7 @@ export const AdminLoginPage: React.FC = () => {
         }}
       >
         {/* Header Icon & Brand */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
           <div
             style={{
               width: 52,
@@ -77,7 +129,55 @@ export const AdminLoginPage: React.FC = () => {
             VEYRA
           </span>
           <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.15em', marginTop: '0.25rem' }}>
-            Atelier Management Portal
+            Atelier Management & RBAC Portal
+          </div>
+        </div>
+
+        {/* Role Presets Switcher */}
+        <div style={{ marginBottom: '1.5rem', background: 'rgba(255,255,255,0.03)', padding: '0.85rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+          <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent-gold)', fontWeight: 700, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <Sparkles size={13} />
+            <span>Select Role for Testing (1-Click Switch)</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+            {adminRolesInfo.map((info) => {
+              const Icon = info.icon;
+              const isSelected = email === info.email;
+              return (
+                <button
+                  key={info.role}
+                  type="button"
+                  onClick={() => handleRoleSelect(info.email, info.pass)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '0.5rem 0.75rem',
+                    borderRadius: 'var(--radius-sm)',
+                    background: isSelected ? 'rgba(212, 175, 55, 0.15)' : 'rgba(255,255,255,0.04)',
+                    border: isSelected ? '1px solid var(--accent-gold)' : '1px solid transparent',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Icon size={16} color={isSelected ? 'var(--accent-gold)' : 'var(--text-secondary)'} />
+                    <div>
+                      <div style={{ fontSize: '0.8rem', fontWeight: isSelected ? 700 : 500, color: isSelected ? '#fff' : 'var(--text-primary)' }}>
+                        {info.label}
+                      </div>
+                      <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>{info.desc}</div>
+                    </div>
+                  </div>
+                  {isSelected && (
+                    <span style={{ fontSize: '0.65rem', padding: '0.15rem 0.4rem', borderRadius: '4px', background: 'var(--accent-gold)', color: '#000', fontWeight: 800 }}>
+                      ACTIVE
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -91,7 +191,7 @@ export const AdminLoginPage: React.FC = () => {
               border: '1px solid rgba(220, 38, 38, 0.3)',
               color: 'var(--status-error)',
               fontSize: '0.825rem',
-              marginBottom: '1.5rem',
+              marginBottom: '1.25rem',
             }}
           >
             {errorMsg}
@@ -99,13 +199,13 @@ export const AdminLoginPage: React.FC = () => {
         )}
 
         {/* Login Form */}
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.15rem' }}>
           <div>
-            <label style={{ fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-primary)', display: 'block', marginBottom: '0.4rem' }}>
+            <label style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-primary)', display: 'block', marginBottom: '0.4rem' }}>
               Atelier Email Address
             </label>
             <div style={{ position: 'relative' }}>
-              <Mail size={17} color="var(--text-muted)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
+              <Mail size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
               <input
                 type="email"
                 required
@@ -127,11 +227,11 @@ export const AdminLoginPage: React.FC = () => {
           </div>
 
           <div>
-            <label style={{ fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-primary)', display: 'block', marginBottom: '0.4rem' }}>
+            <label style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-primary)', display: 'block', marginBottom: '0.4rem' }}>
               Security Password
             </label>
             <div style={{ position: 'relative' }}>
-              <KeyRound size={17} color="var(--text-muted)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
+              <KeyRound size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
               <input
                 type="password"
                 required
@@ -157,9 +257,9 @@ export const AdminLoginPage: React.FC = () => {
             disabled={isLoading}
             className="btn btn-gold"
             style={{
-              padding: '0.9rem',
+              padding: '0.85rem',
               fontSize: '0.9rem',
-              marginTop: '0.5rem',
+              marginTop: '0.4rem',
               opacity: isLoading ? 0.7 : 1,
             }}
           >
@@ -168,20 +268,20 @@ export const AdminLoginPage: React.FC = () => {
             ) : (
               <>
                 <span>Enter Atelier Portal</span>
-                <ArrowRight size={17} />
+                <ArrowRight size={16} />
               </>
             )}
           </button>
         </form>
 
         {/* Security Notice */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '1.75rem' }}>
-          <ShieldCheck size={14} color="var(--accent-gold)" />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', color: 'var(--text-muted)', fontSize: '0.72rem', marginTop: '1.5rem' }}>
+          <ShieldCheck size={13} color="var(--accent-gold)" />
           <span>Encrypted Session · Role-Based Access Control</span>
         </div>
 
         <div style={{ textAlign: 'center', marginTop: '1.25rem' }}>
-          <Link to="/" style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>
+          <Link to="/" style={{ color: 'var(--text-muted)', fontSize: '0.78rem', textDecoration: 'none' }}>
             ← Back to Storefront
           </Link>
         </div>
@@ -189,3 +289,4 @@ export const AdminLoginPage: React.FC = () => {
     </div>
   );
 };
+export default AdminLoginPage;

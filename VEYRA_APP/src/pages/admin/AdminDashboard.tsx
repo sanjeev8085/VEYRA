@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
-import { OrderStatus, Coupon } from '../../types';
+import { OrderStatus, Coupon, AdminRole } from '../../types';
+import { hasPermission } from '../../middleware/authGuard';
 import {
   ShoppingBag,
   Package,
@@ -20,7 +21,9 @@ import {
   Tag,
   LayoutTemplate,
   Save,
+  Shield,
 } from 'lucide-react';
+
 
 export const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -46,8 +49,30 @@ export const AdminDashboard: React.FC = () => {
   const adminLogout = useStore((state) => state.adminLogout);
   const adminSession = useStore((state) => state.adminSession);
 
+  const currentRole = (adminSession?.user.role as AdminRole) || 'super_admin';
+  const canManageProducts = hasPermission(currentRole, 'manage_products');
+  const canDeleteProducts = hasPermission(currentRole, 'delete_products');
+  const canManageOrders = hasPermission(currentRole, 'manage_orders');
+  const canViewCustomers = hasPermission(currentRole, 'view_customers');
+  const canManageCoupons = hasPermission(currentRole, 'manage_coupons');
+  const canManageCMS = hasPermission(currentRole, 'manage_cms');
+  const canManageInventory = hasPermission(currentRole, 'manage_inventory');
+
   // Active Admin View Tab: 'products' | 'orders' | 'inventory' | 'customers' | 'coupons' | 'cms'
-  const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'inventory' | 'customers' | 'coupons' | 'cms'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'inventory' | 'customers' | 'coupons' | 'cms'>(() => {
+    if (currentRole === 'order_manager') return 'orders';
+    return 'products';
+  });
+
+  // Adjust active tab if role changes
+  useEffect(() => {
+    if (currentRole === 'order_manager' && (activeTab === 'products' || activeTab === 'inventory' || activeTab === 'cms' || activeTab === 'coupons')) {
+      setActiveTab('orders');
+    } else if (currentRole === 'product_manager' && (activeTab === 'orders' || activeTab === 'customers')) {
+      setActiveTab('products');
+    }
+  }, [currentRole]);
+
 
   // Product Table Filters & Search
   const [searchTerm, setSearchTerm] = useState('');
@@ -196,32 +221,80 @@ export const AdminDashboard: React.FC = () => {
           }}
         >
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', color: 'var(--accent-gold)', fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em' }}>
-              <Sparkles size={14} />
-              <span>Atelier Management Portal</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', color: 'var(--accent-gold)', fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em' }}>
+                <Sparkles size={14} />
+                <span>Atelier Management Portal</span>
+              </div>
+              <span
+                style={{
+                  fontSize: '0.7rem',
+                  padding: '0.2rem 0.6rem',
+                  borderRadius: '999px',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  background:
+                    currentRole === 'super_admin'
+                      ? 'rgba(212, 175, 55, 0.2)'
+                      : currentRole === 'product_manager'
+                      ? 'rgba(59, 130, 246, 0.2)'
+                      : 'rgba(16, 185, 129, 0.2)',
+                  color:
+                    currentRole === 'super_admin'
+                      ? 'var(--accent-gold)'
+                      : currentRole === 'product_manager'
+                      ? '#60a5fa'
+                      : '#34d399',
+                  border: `1px solid ${
+                    currentRole === 'super_admin'
+                      ? 'var(--border-gold)'
+                      : currentRole === 'product_manager'
+                      ? 'rgba(59, 130, 246, 0.4)'
+                      : 'rgba(16, 185, 129, 0.4)'
+                  }`,
+                }}
+              >
+                {currentRole.replace('_', ' ')}
+              </span>
             </div>
             <h1 className="font-display" style={{ fontSize: 'var(--font-size-h1)', marginTop: '0.25rem', color: 'var(--text-primary)' }}>
               Executive Dashboard
             </h1>
             <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-              Logged in as <strong>{adminSession?.user.email || 'admin@veyra.luxury'}</strong>
+              Logged in as <strong>{adminSession?.user.name || 'Admin'}</strong> ({adminSession?.user.email})
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-            <Link
-              to="/admin/products/new"
-              className="btn btn-gold"
-              style={{ padding: '0.75rem 1.5rem', fontSize: '0.85rem' }}
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            {canManageProducts && (
+              <Link
+                to="/admin/products/new"
+                className="btn btn-gold"
+                style={{ padding: '0.75rem 1.5rem', fontSize: '0.85rem' }}
+              >
+                <Plus size={16} />
+                <span>Add New Garment</span>
+              </Link>
+            )}
+
+            <button
+              onClick={() => {
+                adminLogout();
+                navigate('/admin/login');
+              }}
+              className="btn btn-outline"
+              style={{ padding: '0.75rem 1.25rem', fontSize: '0.85rem' }}
+              title="Switch RBAC Role"
             >
-              <Plus size={16} />
-              <span>Add New Garment</span>
-            </Link>
+              <Shield size={16} />
+              <span>Switch Role</span>
+            </button>
 
             <button
               onClick={handleLogout}
-              className="btn btn-outline"
-              style={{ padding: '0.75rem 1.25rem', fontSize: '0.85rem' }}
+              className="btn btn-ghost"
+              style={{ padding: '0.75rem 1rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}
               title="Secure Logout"
             >
               <LogOut size={16} />
@@ -229,6 +302,7 @@ export const AdminDashboard: React.FC = () => {
             </button>
           </div>
         </div>
+
 
         {/* 1. KEY ATELIER METRICS CARDS */}
         <div
@@ -334,132 +408,145 @@ export const AdminDashboard: React.FC = () => {
 
         {/* 2. ADMIN NAVIGATION TABS */}
         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.75rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem', overflowX: 'auto' }}>
-          <button
-            onClick={() => setActiveTab('products')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.6rem 1.25rem',
-              borderRadius: 'var(--radius-full)',
-              background: activeTab === 'products' ? 'var(--text-primary)' : 'transparent',
-              color: activeTab === 'products' ? 'var(--bg-primary)' : 'var(--text-primary)',
-              border: 'none',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <Package size={15} />
-            <span>Garments Catalog ({products.length})</span>
-          </button>
+          {canManageProducts && (
+            <button
+              onClick={() => setActiveTab('products')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.6rem 1.25rem',
+                borderRadius: 'var(--radius-full)',
+                background: activeTab === 'products' ? 'var(--text-primary)' : 'transparent',
+                color: activeTab === 'products' ? 'var(--bg-primary)' : 'var(--text-primary)',
+                border: 'none',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <Package size={15} />
+              <span>Garments Catalog ({products.length})</span>
+            </button>
+          )}
 
-          <button
-            onClick={() => setActiveTab('orders')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.6rem 1.25rem',
-              borderRadius: 'var(--radius-full)',
-              background: activeTab === 'orders' ? 'var(--text-primary)' : 'transparent',
-              color: activeTab === 'orders' ? 'var(--bg-primary)' : 'var(--text-primary)',
-              border: 'none',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <ShoppingBag size={15} />
-            <span>Orders & Fulfillment ({orders.length})</span>
-          </button>
+          {canManageOrders && (
+            <button
+              onClick={() => setActiveTab('orders')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.6rem 1.25rem',
+                borderRadius: 'var(--radius-full)',
+                background: activeTab === 'orders' ? 'var(--text-primary)' : 'transparent',
+                color: activeTab === 'orders' ? 'var(--bg-primary)' : 'var(--text-primary)',
+                border: 'none',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <ShoppingBag size={15} />
+              <span>Orders & Fulfillment ({orders.length})</span>
+            </button>
+          )}
 
-          <button
-            onClick={() => setActiveTab('inventory')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.6rem 1.25rem',
-              borderRadius: 'var(--radius-full)',
-              background: activeTab === 'inventory' ? 'var(--text-primary)' : 'transparent',
-              color: activeTab === 'inventory' ? 'var(--bg-primary)' : 'var(--text-primary)',
-              border: 'none',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <Box size={15} />
-            <span>Variant Stock Matrix</span>
-          </button>
+          {canManageInventory && (
+            <button
+              onClick={() => setActiveTab('inventory')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.6rem 1.25rem',
+                borderRadius: 'var(--radius-full)',
+                background: activeTab === 'inventory' ? 'var(--text-primary)' : 'transparent',
+                color: activeTab === 'inventory' ? 'var(--bg-primary)' : 'var(--text-primary)',
+                border: 'none',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <Box size={15} />
+              <span>Variant Stock Matrix</span>
+            </button>
+          )}
 
-          <button
-            onClick={() => setActiveTab('customers')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.6rem 1.25rem',
-              borderRadius: 'var(--radius-full)',
-              background: activeTab === 'customers' ? 'var(--text-primary)' : 'transparent',
-              color: activeTab === 'customers' ? 'var(--bg-primary)' : 'var(--text-primary)',
-              border: 'none',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <Users size={15} />
-            <span>Customers CRM ({customers.length})</span>
-          </button>
+          {canViewCustomers && (
+            <button
+              onClick={() => setActiveTab('customers')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.6rem 1.25rem',
+                borderRadius: 'var(--radius-full)',
+                background: activeTab === 'customers' ? 'var(--text-primary)' : 'transparent',
+                color: activeTab === 'customers' ? 'var(--bg-primary)' : 'var(--text-primary)',
+                border: 'none',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <Users size={15} />
+              <span>Customers CRM ({customers.length})</span>
+            </button>
+          )}
 
-          <button
-            onClick={() => setActiveTab('coupons')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.6rem 1.25rem',
-              borderRadius: 'var(--radius-full)',
-              background: activeTab === 'coupons' ? 'var(--text-primary)' : 'transparent',
-              color: activeTab === 'coupons' ? 'var(--bg-primary)' : 'var(--text-primary)',
-              border: 'none',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <Tag size={15} />
-            <span>Promotions & Coupons ({coupons.length})</span>
-          </button>
+          {canManageCoupons && (
+            <button
+              onClick={() => setActiveTab('coupons')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.6rem 1.25rem',
+                borderRadius: 'var(--radius-full)',
+                background: activeTab === 'coupons' ? 'var(--text-primary)' : 'transparent',
+                color: activeTab === 'coupons' ? 'var(--bg-primary)' : 'var(--text-primary)',
+                border: 'none',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <Tag size={15} />
+              <span>Promotions & Coupons ({coupons.length})</span>
+            </button>
+          )}
 
-          <button
-            onClick={() => setActiveTab('cms')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.6rem 1.25rem',
-              borderRadius: 'var(--radius-full)',
-              background: activeTab === 'cms' ? 'var(--text-primary)' : 'transparent',
-              color: activeTab === 'cms' ? 'var(--bg-primary)' : 'var(--text-primary)',
-              border: 'none',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <LayoutTemplate size={15} />
-            <span>Editorial CMS</span>
-          </button>
+          {canManageCMS && (
+            <button
+              onClick={() => setActiveTab('cms')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.6rem 1.25rem',
+                borderRadius: 'var(--radius-full)',
+                background: activeTab === 'cms' ? 'var(--text-primary)' : 'transparent',
+                color: activeTab === 'cms' ? 'var(--bg-primary)' : 'var(--text-primary)',
+                border: 'none',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <LayoutTemplate size={15} />
+              <span>Editorial CMS</span>
+            </button>
+          )}
         </div>
+
 
         {/* 3. TAB 1: PRODUCT MANAGEMENT TABLE */}
         {activeTab === 'products' && (
@@ -669,15 +756,18 @@ export const AdminDashboard: React.FC = () => {
                               </button>
                             )}
 
-                            <button
-                              onClick={() => handleDelete(product.id, product.name)}
-                              className="btn btn-ghost"
-                              style={{ padding: '0.35rem', minWidth: '32px', minHeight: '32px', color: 'var(--status-error)' }}
-                              title="Delete"
-                            >
-                              <Trash2 size={15} />
-                            </button>
+                            {canDeleteProducts && (
+                              <button
+                                onClick={() => handleDelete(product.id, product.name)}
+                                className="btn btn-ghost"
+                                style={{ padding: '0.35rem', minWidth: '32px', minHeight: '32px', color: 'var(--status-error)' }}
+                                title="Delete"
+                              >
+                                <Trash2 size={15} />
+                              </button>
+                            )}
                           </div>
+
                         </td>
                       </tr>
                     );
