@@ -112,7 +112,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
             }}
           >
             <span
-              className="font-display gold-gradient-text"
+              className="font-display gold-gradient-text brand-logo-text"
               style={{
                 fontSize: '1.85rem',
                 fontWeight: 800,
@@ -182,11 +182,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
         </nav>
 
         {/* Right: Actions (Theme Toggle, Search, Wishlist, Bag, Account) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+        <div className="header-actions-group" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
           {/* Theme Toggle */}
           <button
             onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-            className="btn btn-ghost"
+            className="btn btn-ghost header-hide-on-mobile"
             style={{
               padding: '0.5rem',
               borderRadius: '50%',
@@ -219,7 +219,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
           {/* Wishlist */}
           <Link
             to="/wishlist"
-            className="btn btn-ghost"
+            className="btn btn-ghost header-hide-on-mobile"
             style={{
               position: 'relative',
               padding: '0.5rem',

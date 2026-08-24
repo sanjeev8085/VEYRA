@@ -162,7 +162,7 @@ export const PromotionsPage: React.FC = () => {
 
         {/* Coupons Table */}
         <div className="glass-panel" style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--border-subtle)' }}>
-          <div style={{ overflowX: 'auto' }}>
+          <div className="table-responsive" style={{ border: 'none', borderRadius: 0, marginBottom: 0 }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-subtle)', background: 'rgba(255,255,255,0.02)', color: 'var(--text-muted)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>

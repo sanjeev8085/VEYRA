@@ -178,18 +178,15 @@ export const CheckoutPage: React.FC = () => {
 
 
         <div
+          className="responsive-grid-checkout"
           style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 380px',
-            gap: '3.5rem',
             alignItems: 'start',
           }}
-          className="cart-grid"
         >
           {/* Left Form: Steps */}
           <div>
             {/* Step 1: Delivery Address */}
-            <div className="glass-panel" style={{ padding: '2rem', marginBottom: '2rem' }}>
+            <div className="glass-panel" style={{ padding: 'clamp(1.25rem, 3.5vw, 2rem)', marginBottom: '2rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
                 <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--accent-gold)', color: '#070709', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.85rem' }}>
                   1
@@ -199,7 +196,7 @@ export const CheckoutPage: React.FC = () => {
                 </h3>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
                 <div>
                   <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>Full Name</label>
                   <input
@@ -361,7 +358,7 @@ export const CheckoutPage: React.FC = () => {
           </div>
 
           {/* Right Order Summary & Authorize Button */}
-          <div className="glass-panel" style={{ padding: '2rem' }}>
+          <div className="glass-panel" style={{ padding: 'clamp(1.25rem, 3.5vw, 2rem)' }}>
             <h3 className="font-display" style={{ fontSize: '1.2rem', color: '#fff', marginBottom: '1.5rem' }}>
               Order Review ({cart.length} items)
             </h3>

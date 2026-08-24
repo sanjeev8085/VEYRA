@@ -100,13 +100,10 @@ export const ProductDetailPage: React.FC = () => {
 
         {/* Main Product Layout */}
         <div
+          className="responsive-grid-pdp"
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'minmax(320px, 1.25fr) minmax(320px, 1fr)',
-            gap: '3.5rem',
             alignItems: 'start',
           }}
-          className="studio-grid"
         >
           {/* Left Column: Interactive Garment Viewport & Thumbnails */}
           <div>
@@ -424,7 +421,7 @@ export const ProductDetailPage: React.FC = () => {
             </div>
 
             {/* Guarantees Strip */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '1.5rem', marginBottom: '2rem' }}>
+            <div className="responsive-guarantees-grid" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1.5rem', marginBottom: '2rem' }}>
               <div style={{ textAlign: 'center' }}>
                 <Truck size={20} color="var(--accent-gold)" style={{ margin: '0 auto 0.35rem auto' }} />
                 <div style={{ fontSize: '0.75rem', fontWeight: 700 }}>Complimentary Express Shipping</div>
@@ -496,13 +493,15 @@ export const ProductDetailPage: React.FC = () => {
             }}
           >
             <div
-              className="glass-panel"
+              className="glass-panel modal-dialog-responsive"
               style={{
                 width: '100%',
                 maxWidth: '620px',
-                padding: '2.5rem',
+                padding: 'clamp(1.5rem, 3.5vw, 2.5rem)',
                 borderRadius: 'var(--radius-xl)',
                 background: 'var(--bg-card)',
+                maxHeight: '90vh',
+                overflowY: 'auto',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
@@ -518,31 +517,33 @@ export const ProductDetailPage: React.FC = () => {
                 </button>
               </div>
 
-              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
-                <thead>
-                  <tr style={{ borderBottom: '2px solid var(--border-light)', color: 'var(--accent-gold)' }}>
-                    <th style={{ padding: '0.75rem' }}>Size</th>
-                    <th style={{ padding: '0.75rem' }}>Chest (Inches)</th>
-                    <th style={{ padding: '0.75rem' }}>Length (Inches)</th>
-                    <th style={{ padding: '0.75rem' }}>Shoulder (Inches)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    { size: 'S', chest: '38 - 40"', len: '27.5"', sh: '17.5"' },
-                    { size: 'M', chest: '40 - 42"', len: '28.5"', sh: '18.5"' },
-                    { size: 'L', chest: '42 - 44"', len: '29.5"', sh: '19.5"' },
-                    { size: 'XL', chest: '44 - 46"', len: '30.5"', sh: '20.5"' },
-                  ].map((row) => (
-                    <tr key={row.size} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                      <td style={{ padding: '0.75rem', fontWeight: 700 }}>{row.size}</td>
-                      <td style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>{row.chest}</td>
-                      <td style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>{row.len}</td>
-                      <td style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>{row.sh}</td>
+              <div className="table-responsive">
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '2px solid var(--border-light)', color: 'var(--accent-gold)' }}>
+                      <th style={{ padding: '0.75rem' }}>Size</th>
+                      <th style={{ padding: '0.75rem' }}>Chest (Inches)</th>
+                      <th style={{ padding: '0.75rem' }}>Length (Inches)</th>
+                      <th style={{ padding: '0.75rem' }}>Shoulder (Inches)</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {[
+                      { size: 'S', chest: '38 - 40"', len: '27.5"', sh: '17.5"' },
+                      { size: 'M', chest: '40 - 42"', len: '28.5"', sh: '18.5"' },
+                      { size: 'L', chest: '42 - 44"', len: '29.5"', sh: '19.5"' },
+                      { size: 'XL', chest: '44 - 46"', len: '30.5"', sh: '20.5"' },
+                    ].map((row) => (
+                      <tr key={row.size} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                        <td style={{ padding: '0.75rem', fontWeight: 700 }}>{row.size}</td>
+                        <td style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>{row.chest}</td>
+                        <td style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>{row.len}</td>
+                        <td style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>{row.sh}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}

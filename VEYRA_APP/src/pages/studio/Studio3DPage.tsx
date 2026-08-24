@@ -50,12 +50,10 @@ export const Studio3DPage: React.FC = () => {
       }}
     >
       <div
+        className="responsive-grid-studio"
         style={{
           flex: 1,
-          display: 'grid',
-          gridTemplateColumns: 'minmax(320px, 1fr) 420px',
         }}
-        className="studio-grid"
       >
         {/* Left Fullscreen Fitting Atelier Canvas */}
         <div
@@ -179,7 +177,7 @@ export const Studio3DPage: React.FC = () => {
           style={{
             background: 'var(--bg-card)',
             borderLeft: '1px solid var(--border-subtle)',
-            padding: '2.25rem',
+            padding: 'clamp(1.25rem, 3vw, 2.25rem)',
             overflowY: 'auto',
             display: 'flex',
             flexDirection: 'column',
@@ -203,7 +201,7 @@ export const Studio3DPage: React.FC = () => {
                 <span>Choose Model Silhouette</span>
               </label>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.75rem' }}>
                 {SEED_AVATARS.map((avatar) => {
                   const isSelected = activeAvatarId === avatar.id;
                   return (
@@ -249,7 +247,7 @@ export const Studio3DPage: React.FC = () => {
                 <span>Garment Category</span>
               </label>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(70px, 1fr))', gap: '0.5rem' }}>
                 {(['t-shirts', 'shirts', 'jackets', 'trousers'] as const).map((cat) => (
                   <button
                     key={cat}

@@ -77,7 +77,7 @@ export const NotificationCenterModal: React.FC<NotificationCenterModalProps> = (
       <div
         style={{
           width: '100%',
-          maxWidth: selectedEmailNotif ? '850px' : '480px',
+          maxWidth: selectedEmailNotif ? 'min(850px, 100vw)' : 'min(480px, 100vw)',
           height: '100%',
           background: 'var(--bg-card)',
           borderLeft: '1px solid var(--border-gold)',
@@ -279,7 +279,8 @@ export const NotificationCenterModal: React.FC<NotificationCenterModalProps> = (
           {selectedEmailNotif && (
             <div
               style={{
-                width: '420px',
+                width: '100%',
+                maxWidth: 'min(420px, 100%)',
                 borderLeft: '1px solid var(--border-subtle)',
                 background: '#070709',
                 display: 'flex',

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { X, Sparkles, ChevronRight } from 'lucide-react';
+import { X, Sparkles, ChevronRight, Sun, Moon } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 
 interface MobileMenuDrawerProps {
@@ -11,6 +11,9 @@ interface MobileMenuDrawerProps {
 export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({ isOpen, onClose }) => {
   const location = useLocation();
   const user = useStore((state) => state.user);
+  const wishlist = useStore((state) => state.wishlist);
+  const theme = useStore((state) => state.theme);
+  const setTheme = useStore((state) => state.setTheme);
 
   if (!isOpen) return null;
 
@@ -21,6 +24,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({ isOpen, onCl
     { label: 'All Collections', path: '/catalog' },
     { label: 'Find Your Palette', path: '/find-your-colors', highlight: true },
     { label: 'The Fitting Atelier', path: '/studio' },
+    { label: `Wishlist (${wishlist.length})`, path: '/wishlist' },
     { label: 'Track Your Order', path: '/orders/track' },
     { label: 'Customer Account', path: user?.role.includes('admin') ? '/admin' : '/account' },
   ];
@@ -123,8 +127,20 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({ isOpen, onCl
           })}
         </nav>
 
+        {/* Theme Switcher in Mobile Drawer */}
+        <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1rem', marginTop: '1rem' }}>
+          <button
+            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+            className="btn btn-outline"
+            style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', padding: '0.65rem' }}
+          >
+            {theme === 'light' ? <Moon size={16} /> : <Sun size={16} color="var(--accent-gold)" />}
+            <span style={{ fontSize: '0.825rem' }}>Switch to {theme === 'light' ? 'Dark' : 'Light'} Mode</span>
+          </button>
+        </div>
+
         {/* Drawer Bottom Concierge info */}
-        <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1.25rem', marginTop: '1.5rem' }}>
+        <div style={{ paddingTop: '1rem' }}>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
             Need style advice?
           </div>

@@ -190,9 +190,9 @@ export const ReviewSection: React.FC<ReviewSectionProps> = ({
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
           gap: '1.5rem',
-          padding: '1.75rem',
+          padding: 'clamp(1rem, 3vw, 1.75rem)',
           borderRadius: 'var(--radius-lg)',
           background: 'radial-gradient(circle at top left, rgba(212, 175, 55, 0.08) 0%, var(--bg-primary) 100%)',
           border: '1px solid var(--border-gold)',
@@ -290,7 +290,7 @@ export const ReviewSection: React.FC<ReviewSectionProps> = ({
               <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Your verified feedback has been added.</div>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
               {/* Rating Selector */}
               <div>
                 <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>

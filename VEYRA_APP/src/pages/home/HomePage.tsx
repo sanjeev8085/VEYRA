@@ -56,13 +56,11 @@ export const HomePage: React.FC = () => {
       >
         <div className="container" style={{ position: 'relative', zIndex: 10 }}>
           <div
+            className="responsive-grid-hero"
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'minmax(320px, 1.1fr) minmax(320px, 1fr)',
-              gap: '3.5rem',
+              gap: '2.5rem',
               alignItems: 'center',
             }}
-            className="studio-grid"
           >
             {/* Left Campaign Typography */}
             <div>
@@ -268,12 +266,9 @@ export const HomePage: React.FC = () => {
       <section style={{ padding: '6rem 0', background: 'var(--bg-secondary)' }}>
         <div className="container">
           <div
-            className="glass-panel studio-grid"
+            className="glass-panel responsive-grid-pdp"
             style={{
-              padding: '3.5rem 3rem',
-              display: 'grid',
-              gridTemplateColumns: 'minmax(280px, 1.2fr) minmax(280px, 1fr)',
-              gap: '3rem',
+              padding: 'clamp(1.5rem, 4vw, 3.5rem)',
               alignItems: 'center',
               borderRadius: 'var(--radius-xl)',
               background: 'linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(243,239,232,0.85) 100%)',
@@ -321,8 +316,8 @@ export const HomePage: React.FC = () => {
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: '1rem',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
+                gap: '0.75rem',
               }}
             >
               {[
@@ -390,10 +385,10 @@ export const HomePage: React.FC = () => {
           </div>
 
           <div
+            className="product-catalog-grid"
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: '2.5rem',
+              gap: '2rem',
             }}
           >
             {featuredTees.map((product) => (
@@ -404,16 +399,14 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* 4. THE ATELIER FITTING EXPERIENCE (Shifted Canvas Section with Interactive Swatches) */}
-      <section style={{ padding: '6rem 0', background: 'var(--bg-secondary)' }}>
+      <section style={{ padding: 'clamp(3rem, 6vw, 6rem) 0', background: 'var(--bg-secondary)' }}>
         <div className="container">
           <div
+            className="responsive-grid-hero"
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'minmax(320px, 1fr) minmax(320px, 1.2fr)',
-              gap: '3.5rem',
+              gap: '2.5rem',
               alignItems: 'center',
             }}
-            className="studio-grid"
           >
             {/* Left Description & Controls */}
             <div>
@@ -488,7 +481,7 @@ export const HomePage: React.FC = () => {
                     Active Fabric Shade: <span style={{ color: 'var(--accent-gold)' }}>{atelierColorName}</span>
                   </label>
                 </div>
-                <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+                <div className="swatch-group" style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
                   {atelierColors.map((c) => (
                     <button
                       key={c.hex}
@@ -521,9 +514,9 @@ export const HomePage: React.FC = () => {
 
             {/* Right Shifted Canvas */}
             <div
-              className="glass-panel"
+              className="glass-panel three-canvas-container"
               style={{
-                height: '520px',
+                height: 'clamp(340px, 45vw, 520px)',
                 position: 'relative',
                 overflow: 'hidden',
                 borderRadius: 'var(--radius-xl)',
@@ -565,7 +558,7 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* 5. ARTISANAL SHIRTS COLLECTION */}
-      <section style={{ padding: '6rem 0' }}>
+      <section style={{ padding: 'clamp(3rem, 6vw, 6rem) 0' }}>
         <div className="container">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3rem', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
@@ -588,10 +581,10 @@ export const HomePage: React.FC = () => {
           </div>
 
           <div
+            className="product-catalog-grid"
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: '2.5rem',
+              gap: '2rem',
             }}
           >
             {featuredShirts.map((product) => (
@@ -602,7 +595,7 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* 6. ATELIER PHILOSOPHY & CRAFTSMANSHIP BANNER */}
-      <section style={{ padding: '6rem 0', background: 'var(--bg-secondary)' }}>
+      <section style={{ padding: 'clamp(3rem, 6vw, 6rem) 0', background: 'var(--bg-secondary)' }}>
         <div className="container">
           <div
             style={{
@@ -621,7 +614,7 @@ export const HomePage: React.FC = () => {
               We reject fleeting trends in pursuit of timeless proportions, bio-polished natural yarns, and artisanal hand-finishing that endures for years.
             </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem', textAlign: 'center' }}>
+            <div className="responsive-guarantees-grid">
               <div>
                 <Compass size={28} color="var(--accent-gold)" style={{ margin: '0 auto 0.75rem auto' }} />
                 <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.25rem' }}>

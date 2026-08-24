@@ -908,7 +908,7 @@ export const AddProductWizard: React.FC = () => {
                 </span>
               </div>
 
-              <div style={{ overflowX: 'auto' }}>
+              <div className="table-responsive">
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                   <thead>
                     <tr style={{ borderBottom: '2px solid var(--border-light)', color: 'var(--text-primary)', fontSize: '0.8rem' }}>

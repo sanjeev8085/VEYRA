@@ -71,34 +71,32 @@ export const CartPage: React.FC = () => {
           </div>
         ) : (
           <div
+            className="responsive-grid-checkout"
             style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 380px',
-              gap: '3rem',
               alignItems: 'start',
             }}
-            className="cart-grid"
           >
             {/* Left Items Table */}
-            <div className="glass-panel" style={{ padding: '2rem' }}>
+            <div className="glass-panel" style={{ padding: 'clamp(1rem, 3vw, 2rem)' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 {cart.map((item) => (
                   <div
                     key={item.id}
                     style={{
                       display: 'flex',
-                      gap: '1.5rem',
+                      gap: '1.25rem',
                       paddingBottom: '1.5rem',
                       borderBottom: '1px solid var(--border-subtle)',
                       alignItems: 'center',
+                      flexWrap: 'wrap',
                     }}
                   >
                     <img
                       src={item.imageUrl || item.image || ''}
                       alt={item.productName}
-                      style={{ width: '90px', height: '112px', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }}
+                      style={{ width: 'clamp(64px, 18vw, 90px)', height: 'clamp(80px, 22vw, 112px)', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }}
                     />
-                    <div style={{ flex: 1 }}>
+                    <div style={{ flex: '1 1 180px' }}>
                       <h4 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#fff', marginBottom: '0.25rem' }}>
                         {item.productName}
                       </h4>
