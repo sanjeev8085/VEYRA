@@ -270,6 +270,12 @@ button, a {
   word-break: break-word;
 }
 
+.btn span {
+  white-space: normal;
+  text-align: center;
+  max-width: 100%;
+}
+
 .btn-primary {
   background: var(--text-primary);
   color: var(--bg-primary);

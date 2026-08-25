@@ -313,6 +313,14 @@ span a,
     font-size: clamp(1.35rem, 5vw, 1.75rem) !important;
     line-height: 1.25 !important;
   }
+
+  /* Responsive Buttons */
+  .btn {
+    padding: 0.7rem 1.15rem !important;
+    font-size: 0.825rem !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
 }
 
 /* ==========================================================================

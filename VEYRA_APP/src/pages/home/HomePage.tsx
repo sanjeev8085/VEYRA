@@ -123,8 +123,10 @@ export const HomePage: React.FC = () => {
                   to="/catalog"
                   className="btn btn-gold"
                   style={{
-                    padding: '0.9rem 2.2rem',
-                    fontSize: '0.95rem',
+                    padding: '0.8rem clamp(1.25rem, 3vw, 2rem)',
+                    fontSize: '0.9rem',
+                    maxWidth: '100%',
+                    boxSizing: 'border-box',
                   }}
                 >
                   <span>Explore Collection</span>
@@ -135,8 +137,10 @@ export const HomePage: React.FC = () => {
                   to="/find-your-colors"
                   className="btn btn-outline"
                   style={{
-                    padding: '0.9rem 1.8rem',
-                    fontSize: '0.95rem',
+                    padding: '0.8rem clamp(1.1rem, 2.5vw, 1.6rem)',
+                    fontSize: '0.9rem',
+                    maxWidth: '100%',
+                    boxSizing: 'border-box',
                   }}
                 >
                   <Sparkles size={16} />
@@ -313,17 +317,19 @@ export const HomePage: React.FC = () => {
                 to="/find-your-colors"
                 className="btn btn-gold"
                 style={{
-                  padding: '0.85rem 1.75rem',
+                  padding: '0.75rem clamp(1rem, 2.5vw, 1.5rem)',
+                  width: 'fit-content',
                   maxWidth: '100%',
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   textAlign: 'center',
                   marginBottom: '1rem',
+                  boxSizing: 'border-box',
                 }}
               >
                 <Camera size={17} />
-                <span>Begin Your Style Consultation</span>
+                <span>Explore Your Color Palette</span>
               </Link>
             </div>
 
@@ -528,7 +534,7 @@ export const HomePage: React.FC = () => {
                 </div>
               </div>
 
-              <Link to="/studio" className="btn btn-gold" style={{ padding: '0.85rem 2rem' }}>
+              <Link to="/studio" className="btn btn-gold" style={{ padding: '0.8rem clamp(1.25rem, 3vw, 2rem)', maxWidth: '100%', boxSizing: 'border-box' }}>
                 <span>Open Full Fitting Atelier</span>
                 <ArrowRight size={16} />
               </Link>
