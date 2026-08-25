@@ -245,7 +245,7 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
 
           {/* Product Title */}
           <Link
-            to={`/product/${product.slug}`}
+            to={`/product/${product.slug || product.id}?color=${encodeURIComponent(selectedColorHex)}`}
             style={{
               fontSize: 'clamp(0.9rem, 2.2vw, 1.1rem)',
               fontWeight: 700,

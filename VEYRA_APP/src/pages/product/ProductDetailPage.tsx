@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { SEED_PRODUCTS } from '../../data/seedData';
 import { ThreeCanvas } from '../../components/three/ThreeCanvas';
 import { ViewportControls } from '../../components/three/ViewportControls';
@@ -25,8 +25,22 @@ import { SEO } from '../../components/common/SEO';
 
 export const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
+  const [searchParams] = useSearchParams();
   const products = useStore((state) => state.products);
-  const product = products.find((p) => p.slug === slug) || products[0] || SEED_PRODUCTS[0];
+
+  // Exact matching by slug, id, or normalized slug
+  const product = useMemo(() => {
+    if (!slug) return products[0] || SEED_PRODUCTS[0];
+    const target = slug.toLowerCase();
+    return (
+      products.find((p) => (p.slug && p.slug.toLowerCase() === target) || p.id === slug || p.id.toLowerCase() === target) ||
+      SEED_PRODUCTS.find((p) => (p.slug && p.slug.toLowerCase() === target) || p.id === slug || p.id.toLowerCase() === target) ||
+      products[0] ||
+      SEED_PRODUCTS[0]
+    );
+  }, [products, slug]);
+
+  const colorQuery = searchParams.get('color');
 
   const addToCart = useStore((state) => state.addToCart);
   const toggleWishlist = useStore((state) => state.toggleWishlist);
@@ -39,6 +53,19 @@ export const ProductDetailPage: React.FC = () => {
   const [selectedColorHex, setSelectedColorHex] = useState(product.variants[0].colorHex);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [viewFormat, setViewFormat] = useState<'3d' | 'lookbook360'>('3d');
+
+  // Synchronize state whenever the active product or color query parameter changes
+  useEffect(() => {
+    const initialVariant =
+      (colorQuery && product.variants.find((v) => v.colorHex.toLowerCase() === colorQuery.toLowerCase())) ||
+      product.variants[0];
+
+    setSelectedVariant(initialVariant);
+    setSelectedSize(initialVariant.size);
+    setSelectedColorHex(initialVariant.colorHex);
+    setActiveImageIndex(0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [product.id, colorQuery]);
 
   // Modals & Accordions
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
