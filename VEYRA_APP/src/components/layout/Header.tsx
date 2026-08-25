@@ -86,16 +86,19 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
         }}
       >
         {/* Left: Mobile Menu Trigger & Brand Identity */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(0.4rem, 1.5vw, 1rem)', flexShrink: 0, minWidth: 'max-content' }}>
           <button
             onClick={onOpenMobileMenu}
             className="mobile-only-btn btn btn-ghost"
             style={{
-              padding: '0.5rem',
+              padding: '0.45rem',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               border: 'none',
+              minWidth: '38px',
+              minHeight: '38px',
+              flexShrink: 0,
             }}
             aria-label="Open menu"
           >
@@ -105,18 +108,24 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
           <Link
             to="/"
             style={{
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
               gap: '0.4rem',
               textDecoration: 'none',
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
             }}
           >
             <span
               className="font-display gold-gradient-text brand-logo-text"
               style={{
-                fontSize: '1.85rem',
+                fontSize: 'clamp(1.25rem, 3.8vw, 1.85rem)',
                 fontWeight: 800,
-                letterSpacing: '0.2em',
+                letterSpacing: '0.16em',
+                whiteSpace: 'nowrap',
+                display: 'inline-block',
+                flexShrink: 0,
+                lineHeight: 1,
               }}
             >
               VEYRA
@@ -365,11 +374,15 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                   background: 'linear-gradient(135deg, var(--accent-gold) 0%, #b8860b 100%)',
                   color: '#000',
                   fontWeight: 800,
-                  fontSize: '0.75rem',
+                  fontSize: '0.72rem',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   boxShadow: '0 0 8px rgba(212, 175, 55, 0.4)',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                  lineHeight: 1,
+                  letterSpacing: '0.02em',
                 }}
               >
                 {user.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}

@@ -37,12 +37,20 @@ html, body {
   word-wrap: break-word;
 }
 
-/* Universal Text & Section Containment */
-h1, h2, h3, h4, h5, h6, p, span, a, div, li, label, strong, em {
+/* Universal Text & Section Containment (Headings, Paragraphs, Lists) */
+p, h1, h2, h3, h4, h5, h6, li, label, blockquote, figcaption {
   overflow-wrap: break-word;
   word-wrap: break-word;
-  word-break: break-word;
-  max-width: 100%;
+}
+
+/* Brand Identity & Non-wrapping Tokens */
+.brand-logo-text {
+  white-space: nowrap !important;
+  display: inline-block !important;
+  flex-shrink: 0 !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  max-width: none !important;
 }
 
 section, main, article, aside, header, footer {
