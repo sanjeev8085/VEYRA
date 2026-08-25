@@ -4,6 +4,7 @@ import { OrbitControls, ContactShadows, Float } from '@react-three/drei';
 import { MannequinModel } from './MannequinModel';
 import { GarmentModel } from './GarmentModel';
 import { StandaloneGarmentModel } from './StandaloneGarmentModel';
+import { GLBGarmentModel } from './GLBGarmentModel';
 import { CanvasProgressLoader, WebGLFallbackView, ThreeErrorBoundary, checkWebGLSupport } from './ModelLoader';
 import { useStore } from '../../store/useStore';
 import { getAdaptiveDPR, useCanvasIntersectionObserver, SceneCleanupManager } from '../../utils/threeCleanup';
@@ -12,6 +13,7 @@ interface ThreeCanvasProps {
   garmentType?: 't-shirts' | 'shirts' | 'jackets' | 'trousers' | string;
   garmentColorHex?: string;
   overrideColor?: string;
+  modelUrl?: string;
   autoRotate?: boolean;
   interactive?: boolean;
   avatarId?: string;
@@ -26,6 +28,7 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
   garmentType = 't-shirts',
   garmentColorHex,
   overrideColor,
+  modelUrl,
   autoRotate,
   interactive = true,
   avatarId,
@@ -115,7 +118,12 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
 
           <Suspense fallback={<CanvasProgressLoader />}>
             <Float speed={isAutoRotate ? 1.2 : 0} rotationIntensity={0.03} floatIntensity={0.05}>
-              {mode === 'standalone' ? (
+              {modelUrl ? (
+                <group position={[0, 0, 0]}>
+                  {mode === 'avatar' && <MannequinModel isFemale={isFemale} />}
+                  <GLBGarmentModel modelUrl={modelUrl} colorHex={activeColor} isFemale={isFemale} />
+                </group>
+              ) : mode === 'standalone' ? (
                 <group position={[0, 0, 0]}>
                   <StandaloneGarmentModel
                     garmentType={garmentType}

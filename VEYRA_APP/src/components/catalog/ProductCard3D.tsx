@@ -111,6 +111,7 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
           <ThreeCanvas
             garmentType={product.category}
             garmentColorHex={selectedColorHex}
+            modelUrl={product.threeDClothingUrl}
             mode={cardMode}
             autoRotate={!isInteracting}
             interactive={true}
