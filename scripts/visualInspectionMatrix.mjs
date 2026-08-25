@@ -56,12 +56,18 @@ viewports.forEach(vp => {
 
   const swatchesFit = swatchCardWidth >= 90; // minimum comfortable width for a swatch card
 
-  // 5. Header Calculation
-  // Logo: clamp(1.2rem, 3.5vw, 1.85rem) -> ~20px to 30px height, ~80px to 120px width
-  // Actions: Hamburger(44px) + Logo(~90px) + Search(44px) + Bell(44px) + Bag(44px) + Profile(44px) = ~310px
+  // 5. Product Catalog Grid Calculation
+  // 2560px+: 5 cols, 1200-2559px: 4 cols, 900-1199px: 3 cols, 361-899px: 2 cols, <=360px: 1 col
+  let productCols = w >= 2560 ? 5 : w >= 1200 ? 4 : w >= 900 ? 3 : w >= 361 ? 2 : 1;
+  let productGap = w >= 1600 ? 32 : w >= 1200 ? 28 : w >= 900 ? 24 : w >= 600 ? 20 : 14;
+  let totalProductGap = (productCols - 1) * productGap;
+  let productCardWidth = (containerWidth - totalProductGap) / productCols;
+  const productCardSensible = productCardWidth <= 380 && productCardWidth >= 130;
+
+  // 6. Header Calculation
   const headerFits = w >= 320;
 
-  const passed = ctaFitsInCard && ctaFitsInViewport && swatchesFit && headerFits;
+  const passed = ctaFitsInCard && ctaFitsInViewport && swatchesFit && headerFits && productCardSensible;
   if (!passed) allPassed = false;
 
   console.log(`📱 ${vp.name.padEnd(28)} [${String(w).padStart(4)}px]`);
@@ -69,6 +75,7 @@ viewports.forEach(vp => {
   console.log(`   ├─ Card Inner Width:  ${cardInnerWidth}px (Padding: ${cardPadding}px/side)`);
   console.log(`   ├─ CTA Button Width:  ${ctaWidth}px  -->  ${ctaFitsInCard ? '✓ 100% Contained inside Card' : '❌ OVERFLOW'}`);
   console.log(`   ├─ Palette Swatches:  ${swatchCols} Col (${Math.round(swatchCardWidth)}px/card)  -->  ${swatchesFit ? '✓ Fully Contained' : '❌ TOO NARROW'}`);
+  console.log(`   ├─ Product Grid:      ${productCols} Col (${Math.round(productCardWidth)}px/card)  -->  ${productCardSensible ? '✓ Contained Product Card' : '❌ TOO LARGE'}`);
   console.log(`   └─ Status:            ${passed ? '✅ PASS' : '❌ FAIL'}\n`);
 });
 

@@ -400,13 +400,7 @@ export const HomePage: React.FC = () => {
             </Link>
           </div>
 
-          <div
-            className="product-catalog-grid"
-            style={{
-              display: 'grid',
-              gap: '2rem',
-            }}
-          >
+          <div className="product-catalog-grid">
             {featuredTees.map((product) => (
               <ProductCard3D key={product.id} product={product} />
             ))}
@@ -596,13 +590,7 @@ export const HomePage: React.FC = () => {
             </Link>
           </div>
 
-          <div
-            className="product-catalog-grid"
-            style={{
-              display: 'grid',
-              gap: '2rem',
-            }}
-          >
+          <div className="product-catalog-grid">
             {featuredShirts.map((product) => (
               <ProductCard3D key={product.id} product={product} />
             ))}

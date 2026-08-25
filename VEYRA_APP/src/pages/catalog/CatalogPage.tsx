@@ -301,13 +301,7 @@ export const CatalogPage: React.FC = () => {
             </button>
           </div>
         ) : (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: '2.5rem',
-            }}
-          >
+          <div className="product-catalog-grid">
             {filteredProducts.map((product) => (
               <ProductCard3D key={product.id} product={product} />
             ))}

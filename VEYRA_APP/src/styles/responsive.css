@@ -172,6 +172,57 @@ img, video, canvas, svg {
   align-items: start;
 }
 
+/* Product Catalog Grid — Responsive Multi-Breakpoint System */
+.product-catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.75rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 2560px) {
+  .product-catalog-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 2.25rem !important;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 2559px) {
+  .product-catalog-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 1.75rem !important;
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1199px) {
+  .product-catalog-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 1.5rem !important;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 899px) {
+  .product-catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 1.25rem !important;
+  }
+}
+
+@media (min-width: 361px) and (max-width: 599px) {
+  .product-catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.85rem !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .product-catalog-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+}
+
 /* Guarantees & Feature Highlights Grid */
 .responsive-guarantees-grid {
   display: grid;

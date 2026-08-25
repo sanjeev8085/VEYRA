@@ -99,7 +99,7 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
       <div
         style={{
           position: 'relative',
-          height: 'clamp(260px, 32vw, 380px)',
+          height: 'clamp(240px, 20vw, 320px)',
           background: 'radial-gradient(circle at center, var(--bg-card) 0%, var(--bg-secondary) 100%)',
           overflow: 'hidden',
         }}
