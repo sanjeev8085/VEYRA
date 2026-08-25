@@ -273,10 +273,9 @@ export const HomePage: React.FC = () => {
       <section style={{ padding: 'clamp(3rem, 6vw, 6rem) 0', background: 'var(--bg-secondary)', overflow: 'hidden' }}>
         <div className="container" style={{ overflow: 'hidden' }}>
           <div
-            className="glass-panel responsive-grid-hero"
+            className="glass-panel responsive-grid-split"
             style={{
               padding: 'clamp(1.25rem, 3.5vw, 3rem)',
-              alignItems: 'center',
               borderRadius: 'var(--radius-xl)',
               background: 'linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(243,239,232,0.85) 100%)',
               border: '1px solid var(--border-gold)',
@@ -334,17 +333,7 @@ export const HomePage: React.FC = () => {
             </div>
 
             {/* Editorial Palette Swatch Matrix */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-                gap: 'clamp(0.4rem, 1.2vw, 0.75rem)',
-                minWidth: 0,
-                width: '100%',
-                maxWidth: '100%',
-                boxSizing: 'border-box',
-              }}
-            >
+            <div className="home-palette-grid">
               {[
                 { name: 'Botanical Sage', hex: '#6c8a66', match: 'Olive & Warm' },
                 { name: 'Earthy Terracotta', hex: '#c45b38', match: 'Golden Honey' },
@@ -357,7 +346,7 @@ export const HomePage: React.FC = () => {
                   key={swatch.name}
                   className="glass-card"
                   style={{
-                    padding: 'clamp(0.6rem, 1.5vw, 1.1rem) clamp(0.2rem, 0.8vw, 0.5rem)',
+                    padding: 'clamp(0.75rem, 2vw, 1.25rem) clamp(0.35rem, 1vw, 0.75rem)',
                     textAlign: 'center',
                     borderRadius: 'var(--radius-md)',
                     minWidth: 0,
