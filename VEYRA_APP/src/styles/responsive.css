@@ -277,6 +277,7 @@ span a,
 
   /* Force single-column on all multi-column responsive grids */
   .responsive-grid-hero,
+  .responsive-grid-split,
   .responsive-grid-2,
   .responsive-grid-3,
   .responsive-grid-pdp,

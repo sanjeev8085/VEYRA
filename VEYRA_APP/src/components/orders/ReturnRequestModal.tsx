@@ -139,17 +139,17 @@ export const ReturnRequestModal: React.FC<ReturnRequestModalProps> = ({ order, o
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '1.5rem',
+        padding: 'clamp(0.5rem, 2vw, 1.5rem)',
       }}
     >
       <div
         className="glass-panel"
         style={{
           width: '100%',
-          maxWidth: '620px',
+          maxWidth: 'min(620px, calc(100vw - 20px))',
           maxHeight: '90vh',
           overflowY: 'auto',
-          padding: '2.25rem',
+          padding: 'clamp(1.2rem, 3vw, 2.25rem)',
           borderRadius: 'var(--radius-xl)',
           border: '1px solid var(--border-gold)',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)',

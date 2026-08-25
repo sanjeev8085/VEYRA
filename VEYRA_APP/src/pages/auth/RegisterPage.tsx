@@ -107,11 +107,12 @@ export const RegisterPage: React.FC = () => {
         style={{
           width: '100%',
           maxWidth: '520px',
-          padding: '2.5rem 2.25rem',
+          padding: 'clamp(1.25rem, 3.5vw, 2.5rem) clamp(1rem, 3vw, 2.25rem)',
           borderRadius: 'var(--radius-xl)',
           border: '1px solid var(--border-gold)',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-          margin: '0 1rem',
+          margin: '0 clamp(0.5rem, 2vw, 1rem)',
+          boxSizing: 'border-box',
         }}
       >
         {/* Brand Header */}

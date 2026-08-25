@@ -8,7 +8,6 @@ import {
   ShoppingBag,
   User,
   ArrowUpRight,
-  Sparkles,
 } from 'lucide-react';
 
 interface ProductCard3DProps {
@@ -100,7 +99,7 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
       <div
         style={{
           position: 'relative',
-          height: '380px',
+          height: 'clamp(260px, 32vw, 380px)',
           background: 'radial-gradient(circle at center, var(--bg-card) 0%, var(--bg-secondary) 100%)',
           overflow: 'hidden',
         }}
@@ -147,19 +146,19 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
           onClick={handleModeToggle}
           style={{
             position: 'absolute',
-            top: '1rem',
-            left: '1rem',
-            padding: '0.35rem 0.75rem',
+            top: '0.75rem',
+            left: '0.75rem',
+            padding: '0.3rem 0.65rem',
             borderRadius: 'var(--radius-full)',
             background: 'var(--bg-glass)',
             backdropFilter: 'blur(12px)',
             border: '1px solid var(--border-subtle)',
             color: 'var(--text-primary)',
-            fontSize: '0.72rem',
+            fontSize: '0.7rem',
             fontWeight: 600,
             display: 'flex',
             alignItems: 'center',
-            gap: '0.35rem',
+            gap: '0.3rem',
             zIndex: 10,
             cursor: 'pointer',
             transition: 'all 0.2s ease',
@@ -169,10 +168,10 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
           {cardMode === 'standalone' ? (
             <>
               <User size={12} />
-              <span>On Silhouette</span>
+              <span>Silhouette</span>
             </>
           ) : (
-            <span>Draped View</span>
+            <span>Draped</span>
           )}
         </button>
 
@@ -185,10 +184,10 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
           }}
           style={{
             position: 'absolute',
-            top: '1rem',
-            right: '1rem',
-            width: '36px',
-            height: '36px',
+            top: '0.75rem',
+            right: '0.75rem',
+            width: '32px',
+            height: '32px',
             borderRadius: '50%',
             background: 'var(--bg-glass)',
             backdropFilter: 'blur(12px)',
@@ -203,14 +202,14 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
           }}
           aria-label="Wishlist toggle"
         >
-          <Heart size={16} fill={inWishlist ? '#ef4444' : 'none'} />
+          <Heart size={15} fill={inWishlist ? '#ef4444' : 'none'} />
         </button>
       </div>
 
       {/* 2. EDITORIAL DETAILS & REAL-TIME COLOR SWATCHES */}
       <div
         style={{
-          padding: '1.4rem 1.5rem 1.5rem 1.5rem',
+          padding: 'clamp(0.85rem, 2vw, 1.4rem)',
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
@@ -229,8 +228,8 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
           >
             <span
               style={{
-                fontSize: '0.72rem',
-                letterSpacing: '0.14em',
+                fontSize: '0.7rem',
+                letterSpacing: '0.12em',
                 textTransform: 'uppercase',
                 color: 'var(--accent-gold)',
                 fontWeight: 700,
@@ -238,7 +237,7 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
             >
               {product.brand}
             </span>
-            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'capitalize' }}>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'capitalize' }}>
               {product.category.replace('-', ' ')}
             </span>
           </div>
@@ -247,41 +246,41 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
           <Link
             to={`/product/${product.slug}`}
             style={{
-              fontSize: '1.1rem',
+              fontSize: 'clamp(0.9rem, 2.2vw, 1.1rem)',
               fontWeight: 700,
               color: 'var(--text-primary)',
-              margin: '0.2rem 0 0.5rem 0',
+              margin: '0.2rem 0 0.4rem 0',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               lineHeight: 1.3,
             }}
           >
-            <span>{product.name}</span>
-            <ArrowUpRight size={15} color="var(--text-muted)" />
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{product.name}</span>
+            <ArrowUpRight size={14} color="var(--text-muted)" style={{ flexShrink: 0 }} />
           </Link>
 
           {/* Fabric Specification */}
           <p
             style={{
-              fontSize: '0.825rem',
+              fontSize: '0.78rem',
               color: 'var(--text-secondary)',
-              lineHeight: 1.45,
-              marginBottom: '1rem',
+              lineHeight: 1.4,
+              marginBottom: '0.75rem',
             }}
           >
-            {product.shortDescription || product.description.slice(0, 65) + '...'}
+            {product.shortDescription || product.description.slice(0, 50) + '...'}
           </p>
 
           {/* Interactive Color Swatches */}
-          <div style={{ marginBottom: '1.25rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.45rem' }}>
-              <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>
+          <div style={{ marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+              <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)' }}>
                 Shade: <strong style={{ color: 'var(--text-primary)' }}>{selectedColorName}</strong>
               </span>
             </div>
 
-            <div style={{ display: 'flex', gap: '0.45rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
               {uniqueColors.map((color) => {
                 const isSelected = selectedColorHex.toLowerCase() === color.hex.toLowerCase();
                 return (
@@ -289,8 +288,8 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
                     key={color.hex}
                     onClick={(e) => handleColorClick(e, color)}
                     style={{
-                      width: '24px',
-                      height: '24px',
+                      width: '20px',
+                      height: '20px',
                       borderRadius: '50%',
                       background: color.hex,
                       border: isSelected ? '2px solid var(--accent-gold)' : '1px solid rgba(40,30,20,0.12)',
@@ -314,46 +313,49 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
             justifyContent: 'space-between',
             alignItems: 'center',
             borderTop: '1px solid var(--border-subtle)',
-            paddingTop: '1rem',
+            paddingTop: '0.75rem',
+            gap: '0.4rem',
+            flexWrap: 'wrap',
           }}
         >
           <div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--accent-gold)' }}>
+            <div style={{ fontSize: 'clamp(1rem, 2.5vw, 1.25rem)', fontWeight: 800, color: 'var(--accent-gold)' }}>
               ₹{product.price.toLocaleString('en-IN')}
             </div>
             {product.originalPrice && (
-              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textDecoration: 'line-through' }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textDecoration: 'line-through' }}>
                 ₹{product.originalPrice.toLocaleString('en-IN')}
               </div>
             )}
           </div>
 
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', gap: '0.35rem' }}>
             <Link
               to={`/product/${product.slug}`}
               className="btn btn-outline"
               style={{
-                padding: '0.45rem 0.9rem',
-                minHeight: '38px',
-                fontSize: '0.75rem',
+                padding: '0.35rem 0.65rem',
+                minHeight: '34px',
+                minWidth: 'auto',
+                fontSize: '0.72rem',
                 fontWeight: 700,
               }}
             >
-              <Sparkles size={13} />
-              <span>Details</span>
+              <span>View</span>
             </Link>
 
             <button
               onClick={handleQuickAdd}
               className="btn btn-gold"
               style={{
-                padding: '0.45rem 0.9rem',
-                minHeight: '38px',
-                fontSize: '0.75rem',
+                padding: '0.35rem 0.65rem',
+                minHeight: '34px',
+                minWidth: 'auto',
+                fontSize: '0.72rem',
               }}
               title="Add to Shopping Bag"
             >
-              <ShoppingBag size={14} />
+              <ShoppingBag size={13} />
               <span>Bag</span>
             </button>
           </div>
