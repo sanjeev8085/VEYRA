@@ -148,24 +148,25 @@ export const HomePage: React.FC = () => {
               <div
                 style={{
                   display: 'flex',
-                  gap: '2.5rem',
+                  gap: 'clamp(1rem, 2.5vw, 2.5rem)',
+                  flexWrap: 'wrap',
                   borderTop: '1px solid var(--border-subtle)',
                   paddingTop: '1.75rem',
                 }}
               >
-                <div>
+                <div style={{ minWidth: '80px' }}>
                   <div style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)' }}>100%</div>
                   <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                     Organic Flax & Pima
                   </div>
                 </div>
-                <div>
+                <div style={{ minWidth: '80px' }}>
                   <div style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)' }}>₹0</div>
                   <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                     Express Pan-India Shipping
                   </div>
                 </div>
-                <div>
+                <div style={{ minWidth: '80px' }}>
                   <div style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)' }}>30-Day</div>
                   <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                     Atelier Return Window
@@ -178,12 +179,14 @@ export const HomePage: React.FC = () => {
             <div
               className="glass-panel"
               style={{
-                height: '540px',
+                height: 'clamp(320px, 45vw, 540px)',
                 position: 'relative',
                 overflow: 'hidden',
                 borderRadius: 'var(--radius-xl)',
                 border: '1px solid var(--border-gold)',
                 boxShadow: 'var(--shadow-lg)',
+                width: '100%',
+                minWidth: 0,
               }}
             >
               <img
@@ -263,19 +266,23 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* 2. FIND YOUR PALETTE (Complexion Consultation Teaser) */}
-      <section style={{ padding: '6rem 0', background: 'var(--bg-secondary)' }}>
-        <div className="container">
+      <section style={{ padding: 'clamp(3rem, 6vw, 6rem) 0', background: 'var(--bg-secondary)', overflow: 'hidden' }}>
+        <div className="container" style={{ overflow: 'hidden' }}>
           <div
-            className="glass-panel responsive-grid-pdp"
+            className="glass-panel responsive-grid-hero"
             style={{
-              padding: 'clamp(1.5rem, 4vw, 3.5rem)',
+              padding: 'clamp(1.25rem, 3.5vw, 3rem)',
               alignItems: 'center',
               borderRadius: 'var(--radius-xl)',
               background: 'linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(243,239,232,0.85) 100%)',
               border: '1px solid var(--border-gold)',
+              overflow: 'hidden',
+              width: '100%',
+              maxWidth: '100%',
+              boxSizing: 'border-box',
             }}
           >
-            <div>
+            <div style={{ minWidth: 0, width: '100%' }}>
               <div
                 style={{
                   display: 'inline-flex',
@@ -298,14 +305,22 @@ export const HomePage: React.FC = () => {
                 to Your Natural Tone
               </h2>
 
-              <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.65, marginBottom: '2rem' }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.65, marginBottom: '1.75rem' }}>
                 Every complexion holds subtle golden, rosy, or olive undertones. Discover the chromatic palette designed to naturally elevate your facial structure and wardrobe confidence.
               </p>
 
               <Link
                 to="/find-your-colors"
                 className="btn btn-gold"
-                style={{ padding: '0.85rem 2rem' }}
+                style={{
+                  padding: '0.85rem 1.75rem',
+                  maxWidth: '100%',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  textAlign: 'center',
+                  marginBottom: '1rem',
+                }}
               >
                 <Camera size={17} />
                 <span>Begin Your Style Consultation</span>
@@ -316,42 +331,49 @@ export const HomePage: React.FC = () => {
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
-                gap: '0.75rem',
+                gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+                gap: 'clamp(0.4rem, 1.2vw, 0.75rem)',
+                minWidth: 0,
+                width: '100%',
+                maxWidth: '100%',
+                boxSizing: 'border-box',
               }}
             >
               {[
-                { name: 'Botanical Sage', hex: '#6c8a66', match: 'Olive & Warm Tones' },
-                { name: 'Earthy Terracotta', hex: '#c45b38', match: 'Golden Honey Tones' },
-                { name: 'Capri Sky Blue', hex: '#4a7c9f', match: 'Cool Rosy Tones' },
-                { name: 'Ivory Linen', hex: '#faf8f5', match: 'Universal Neutral' },
-                { name: 'Sunlit Coral', hex: '#d96b58', match: 'Rich Bronze Tones' },
-                { name: 'Vintage Burgundy', hex: '#722f37', match: 'Fair Porcelain Tones' },
+                { name: 'Botanical Sage', hex: '#6c8a66', match: 'Olive & Warm' },
+                { name: 'Earthy Terracotta', hex: '#c45b38', match: 'Golden Honey' },
+                { name: 'Capri Sky Blue', hex: '#4a7c9f', match: 'Cool Rosy' },
+                { name: 'Ivory Linen', hex: '#faf8f5', match: 'Universal' },
+                { name: 'Sunlit Coral', hex: '#d96b58', match: 'Rich Bronze' },
+                { name: 'Vintage Burgundy', hex: '#722f37', match: 'Fair Porcelain' },
               ].map((swatch) => (
                 <div
                   key={swatch.name}
                   className="glass-card"
                   style={{
-                    padding: '1.25rem 0.75rem',
+                    padding: 'clamp(0.6rem, 1.5vw, 1.1rem) clamp(0.2rem, 0.8vw, 0.5rem)',
                     textAlign: 'center',
                     borderRadius: 'var(--radius-md)',
+                    minWidth: 0,
+                    overflow: 'hidden',
+                    boxSizing: 'border-box',
                   }}
                 >
                   <div
                     style={{
-                      width: 44,
-                      height: 44,
+                      width: 'clamp(28px, 6.5vw, 42px)',
+                      height: 'clamp(28px, 6.5vw, 42px)',
                       borderRadius: '50%',
                       background: swatch.hex,
-                      margin: '0 auto 0.75rem auto',
+                      margin: '0 auto 0.4rem auto',
                       border: swatch.hex === '#faf8f5' ? '1px solid #ddd' : 'none',
                       boxShadow: 'var(--shadow-sm)',
                     }}
                   />
-                  <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.2 }}>
+                  <div style={{ fontSize: 'clamp(0.68rem, 1.8vw, 0.8rem)', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.15, wordBreak: 'break-word' }}>
                     {swatch.name}
                   </div>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                  <div style={{ fontSize: 'clamp(0.58rem, 1.5vw, 0.65rem)', color: 'var(--text-muted)', marginTop: '0.2rem', wordBreak: 'break-word' }}>
                     {swatch.match}
                   </div>
                 </div>

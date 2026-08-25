@@ -173,6 +173,24 @@ span a,
   cursor: pointer;
 }
 
+/* Global Grid Child Blowout Prevention */
+.responsive-grid-hero > *,
+.responsive-grid-2 > *,
+.responsive-grid-3 > *,
+.responsive-grid-pdp > *,
+.responsive-grid-studio > *,
+.responsive-grid-checkout > *,
+.studio-grid > *,
+.pdp-grid > *,
+.cart-grid > *,
+.checkout-grid > *,
+.glass-panel,
+.glass-card {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 /* ==========================================================================
    5. LAPTOP & DESKTOP (>= 1025px)
    ========================================================================== */
@@ -184,34 +202,20 @@ span a,
 }
 
 /* ==========================================================================
-   6. TABLET BREAKPOINTS (768px - 1024px)
+   6. TABLET & PHABLET BREAKPOINTS (<= 1024px)
    ========================================================================== */
 
 @media (max-width: 1024px) {
-  .responsive-grid-studio {
-    grid-template-columns: 1fr !important;
-  }
-
-  .responsive-grid-checkout {
-    grid-template-columns: 1fr !important;
-    gap: 2rem !important;
-  }
-
-  .responsive-grid-pdp {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 2rem !important;
-  }
-
-  .responsive-grid-hero {
-    grid-template-columns: 1fr !important;
-    gap: 2rem !important;
-  }
-
+  .responsive-grid-studio,
+  .responsive-grid-checkout,
+  .responsive-grid-pdp,
+  .responsive-grid-hero,
   .studio-grid,
   .pdp-grid,
   .cart-grid,
   .checkout-grid {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 2rem !important;
   }
 }
 
@@ -221,8 +225,8 @@ span a,
 
 @media (max-width: 767px) {
   .container {
-    padding-left: max(1rem, var(--safe-area-left)) !important;
-    padding-right: max(1rem, var(--safe-area-right)) !important;
+    padding-left: max(0.85rem, var(--safe-area-left)) !important;
+    padding-right: max(0.85rem, var(--safe-area-right)) !important;
   }
 
   /* Force single-column on all multi-column responsive grids */
@@ -237,12 +241,12 @@ span a,
   .cart-grid,
   .checkout-grid,
   .admin-grid {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: minmax(0, 1fr) !important;
     gap: 1.5rem !important;
   }
 
   .responsive-guarantees-grid {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: minmax(0, 1fr) !important;
     gap: 1.25rem !important;
   }
 
