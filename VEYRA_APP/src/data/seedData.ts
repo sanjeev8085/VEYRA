@@ -93,6 +93,50 @@ export const SEED_COLLECTIONS: Collection[] = [
 ];
 
 export const SEED_PRODUCTS: Product[] = [
+  // ==================== FLAGSHIP 3D GARMENT ====================
+  {
+    id: 'prod_veyra_signature_tshirt',
+    slug: 'veyra-signature-tshirt',
+    name: 'VEYRA Signature 3D T-Shirt',
+    brand: 'VEYRA Atelier',
+    category: 't-shirts',
+    collectionIds: ['col_botanica', 'summer-2026'],
+    shortDescription: 'Flagship architectural 3D garment crafted with high-density Peruvian Supima cotton.',
+    description:
+      'The definitive VEYRA Signature T-Shirt featuring bespoke digital draping geometry, architectural drop shoulders, and reinforced collar construction.',
+    fabricDetails: '100% Peruvian Supima Cotton (300 GSM) · Bio-polished finish',
+    careInstructions: 'Machine wash cold inside out with gentle detergent. Lay flat to dry.',
+    price: 2499,
+    originalPrice: 3299,
+    discountPercentage: 24,
+    images: [
+      'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=1000&q=85',
+      'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=1000&q=85',
+      'https://images.unsplash.com/photo-1562157873-818bc0726f68?w=1000&q=85',
+    ],
+    threeDClothingUrl: './models/garments/veyra_signature_tshirt.glb',
+    compatibleAvatarIds: ['avatar-male-01', 'avatar-male-02', 'avatar-female-01', 'avatar-female-02'],
+    variants: [
+      { id: 'vst_1', size: 'S', colorName: 'Botanical Sage', colorHex: '#6c8a66', sku: 'VYR-SIG-SGE-S', stock: 20 },
+      { id: 'vst_2', size: 'M', colorName: 'Botanical Sage', colorHex: '#6c8a66', sku: 'VYR-SIG-SGE-M', stock: 35 },
+      { id: 'vst_3', size: 'L', colorName: 'Botanical Sage', colorHex: '#6c8a66', sku: 'VYR-SIG-SGE-L', stock: 25 },
+      { id: 'vst_4', size: 'XL', colorName: 'Botanical Sage', colorHex: '#6c8a66', sku: 'VYR-SIG-SGE-XL', stock: 15 },
+      { id: 'vst_5', size: 'M', colorName: 'Earthy Terracotta', colorHex: '#c45b38', sku: 'VYR-SIG-TER-M', stock: 20 },
+      { id: 'vst_6', size: 'L', colorName: 'Earthy Terracotta', colorHex: '#c45b38', sku: 'VYR-SIG-TER-L', stock: 15 },
+      { id: 'vst_7', size: 'M', colorName: 'Ivory Linen', colorHex: '#faf8f5', sku: 'VYR-SIG-IVO-M', stock: 30 },
+      { id: 'vst_8', size: 'L', colorName: 'Ivory Linen', colorHex: '#faf8f5', sku: 'VYR-SIG-IVO-L', stock: 22 },
+      { id: 'vst_9', size: 'M', colorName: 'Capri Sky Blue', colorHex: '#4a7c9f', sku: 'VYR-SIG-SKY-M', stock: 18 },
+    ],
+    rating: 5.0,
+    reviewCount: 142,
+    isFeatured: true,
+    isNewArrival: true,
+    isTrending: true,
+    status: 'published',
+    createdAt: new Date().toISOString(),
+    tags: ['signature', '3d', 'flagship', 'crewneck', 'cotton', 'summer', 'bestseller'],
+  },
+
   // ==================== T-SHIRTS ====================
   {
     id: 'prod_essential_crew',
