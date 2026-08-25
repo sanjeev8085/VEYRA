@@ -1,7 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode, useState, useEffect } from 'react';
 import { useProgress, Html } from '@react-three/drei';
 import { Sparkles } from 'lucide-react';
-import { FallbackGallery } from '../product/FallbackGallery';
 
 
 /**
@@ -182,18 +181,54 @@ interface WebGLFallbackViewProps {
 
 export const WebGLFallbackView: React.FC<WebGLFallbackViewProps> = ({
   garmentType = 't-shirts',
-  garmentColorHex = '#0f172a',
-  onRetry,
+  garmentColorHex = '#6c8a66',
   height = '100%',
 }) => {
   return (
-    <FallbackGallery
-      garmentType={garmentType}
-      garmentColorHex={garmentColorHex}
-      height={height}
-      onSwitchTo3D={onRetry}
-      canSwitchTo3D={Boolean(onRetry)}
-    />
+    <div
+      style={{
+        width: '100%',
+        height,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'radial-gradient(circle at center, var(--bg-card) 0%, var(--bg-secondary) 100%)',
+        position: 'relative',
+        borderRadius: 'var(--radius-md)',
+        overflow: 'hidden',
+      }}
+    >
+      <svg
+        viewBox="0 0 200 200"
+        style={{
+          width: '68%',
+          height: '68%',
+          filter: 'drop-shadow(0 14px 28px rgba(0,0,0,0.15))',
+          transform: 'rotate(-5deg)',
+        }}
+      >
+        {garmentType === 'shirts' ? (
+          <path
+            d="M 50 42 L 78 36 L 96 56 L 104 56 L 122 36 L 150 42 L 180 88 L 155 98 L 144 72 L 144 168 L 56 168 L 56 72 L 45 98 L 20 88 Z"
+            fill={garmentColorHex}
+          />
+        ) : (
+          <path
+            d="M 45 42 L 78 36 L 100 56 L 122 36 L 155 42 L 185 88 L 158 98 L 146 72 L 146 168 L 54 168 L 54 72 L 42 98 L 15 88 Z"
+            fill={garmentColorHex}
+          />
+        )}
+        {/* Ribbed Collar Arc */}
+        <path
+          d="M 78 36 Q 100 64 122 36"
+          stroke="rgba(0,0,0,0.2)"
+          strokeWidth="3"
+          fill="none"
+        />
+        {/* Subtle Atelier Gold Tag */}
+        <rect x="94" y="66" width="12" height="4" rx="1" fill="#c59b27" />
+      </svg>
+    </div>
   );
 };
 
