@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Product } from '../../types';
 import { ThreeCanvas } from '../three/ThreeCanvas';
 import { useStore } from '../../store/useStore';
@@ -19,6 +19,7 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
   product,
   initialColorHex,
 }) => {
+  const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -36,6 +37,15 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
   const [selectedColorName, setSelectedColorName] = useState(defaultVariant.colorName);
   const [cardMode, setCardMode] = useState<'standalone' | 'avatar'>('standalone');
   const [isInteracting, setIsInteracting] = useState(false);
+
+  const detailUrl = `/product/${product.slug || product.id}?color=${encodeURIComponent(selectedColorHex)}`;
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('button') || (e.target as HTMLElement).closest('a')) {
+      return;
+    }
+    navigate(detailUrl);
+  };
 
   // Extract unique color variants for live on-card swatching
   const uniqueColors = Array.from(
@@ -85,6 +95,7 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
     <div
       ref={containerRef}
       className="glass-card"
+      onClick={handleCardClick}
       style={{
         borderRadius: 'var(--radius-lg)',
         overflow: 'hidden',
@@ -93,6 +104,7 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
         position: 'relative',
         transition: 'all 0.4s var(--ease-luxury)',
         border: '1px solid var(--border-subtle)',
+        cursor: 'pointer',
       }}
     >
       {/* 1. PRIMARY FASHION VIEWPORT (Interactive Garment Experience) */}
@@ -332,7 +344,7 @@ export const ProductCard3D: React.FC<ProductCard3DProps> = ({
 
           <div style={{ display: 'flex', gap: '0.35rem' }}>
             <Link
-              to={`/product/${product.slug}`}
+              to={detailUrl}
               className="btn btn-outline"
               style={{
                 padding: '0.35rem 0.65rem',

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParams, useSearchParams, Link } from 'react-router-dom';
+import { useParams, useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { SEED_PRODUCTS } from '../../data/seedData';
 import { ThreeCanvas } from '../../components/three/ThreeCanvas';
 import { ViewportControls } from '../../components/three/ViewportControls';
-import { FallbackGallery } from '../../components/product/FallbackGallery';
 import { ReviewSection } from '../../components/product/ReviewSection';
+import { ProductCard3D } from '../../components/catalog/ProductCard3D';
 import { useStore } from '../../store/useStore';
 import {
   Heart,
@@ -19,6 +19,11 @@ import {
   RotateCw,
   Eye,
   Box,
+  Zap,
+  Plus,
+  Minus,
+  CheckCircle2,
+  Package,
 } from 'lucide-react';
 
 import { SEO } from '../../components/common/SEO';
@@ -26,6 +31,7 @@ import { SEO } from '../../components/common/SEO';
 export const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const products = useStore((state) => state.products);
 
   // Exact matching by slug, id, or normalized slug
@@ -35,8 +41,7 @@ export const ProductDetailPage: React.FC = () => {
     return (
       products.find((p) => (p.slug && p.slug.toLowerCase() === target) || p.id === slug || p.id.toLowerCase() === target) ||
       SEED_PRODUCTS.find((p) => (p.slug && p.slug.toLowerCase() === target) || p.id === slug || p.id.toLowerCase() === target) ||
-      products[0] ||
-      SEED_PRODUCTS[0]
+      null
     );
   }, [products, slug]);
 
@@ -45,17 +50,23 @@ export const ProductDetailPage: React.FC = () => {
   const addToCart = useStore((state) => state.addToCart);
   const toggleWishlist = useStore((state) => state.toggleWishlist);
   const isInWishlist = useStore((state) => state.isInWishlist);
-  const inWishlist = isInWishlist(product.id);
+  const inWishlist = product ? isInWishlist(product.id) : false;
 
   // Active user selections
-  const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
-  const [selectedSize, setSelectedSize] = useState(product.variants[0].size);
-  const [selectedColorHex, setSelectedColorHex] = useState(product.variants[0].colorHex);
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [selectedVariant, setSelectedVariant] = useState(product ? product.variants[0] : null);
+  const [selectedSize, setSelectedSize] = useState<string>(product ? product.variants[0].size : 'M');
+  const [selectedColorHex, setSelectedColorHex] = useState<string>(product ? product.variants[0].colorHex : '#6c8a66');
+  const [quantity, setQuantity] = useState<number>(1);
+  const [activeImageIndex, setActiveImageIndex] = useState<number>(0);
   const [viewFormat, setViewFormat] = useState<'3d' | 'lookbook360'>('3d');
+
+  // Modals & Accordions
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const [activeAccordion, setActiveAccordion] = useState<'fabric' | 'shipping' | 'reviews' | null>('fabric');
 
   // Synchronize state whenever the active product or color query parameter changes
   useEffect(() => {
+    if (!product) return;
     const initialVariant =
       (colorQuery && product.variants.find((v) => v.colorHex.toLowerCase() === colorQuery.toLowerCase())) ||
       product.variants[0];
@@ -63,13 +74,30 @@ export const ProductDetailPage: React.FC = () => {
     setSelectedVariant(initialVariant);
     setSelectedSize(initialVariant.size);
     setSelectedColorHex(initialVariant.colorHex);
+    setQuantity(1);
     setActiveImageIndex(0);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [product.id, colorQuery]);
+  }, [product?.id, colorQuery]);
 
-  // Modals & Accordions
-  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
-  const [activeAccordion, setActiveAccordion] = useState<'fabric' | 'shipping' | 'reviews' | null>('fabric');
+  // Product not found fallback screen
+  if (!product || !selectedVariant) {
+    return (
+      <div style={{ paddingTop: '120px', minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem' }}>
+        <div className="glass-panel" style={{ maxWidth: '500px', padding: '3rem 2rem', borderRadius: 'var(--radius-xl)' }}>
+          <Package size={48} color="var(--accent-gold)" style={{ margin: '0 auto 1.5rem auto' }} />
+          <h2 className="font-display" style={{ fontSize: '1.8rem', color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
+            Garment Not Found
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '0.95rem', lineHeight: 1.6 }}>
+            The requested haute couture piece could not be located in our current atelier archive.
+          </p>
+          <Link to="/catalog" className="btn btn-gold" style={{ padding: '0.85rem 2rem' }}>
+            Explore All Collections
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   // Unique sizes and colors available for this product
   const availableSizes = Array.from(new Set(product.variants.map((v) => v.size)));
@@ -80,20 +108,38 @@ export const ProductDetailPage: React.FC = () => {
   const handleColorChange = (hex: string) => {
     setSelectedColorHex(hex);
     const matchingVariant =
-      product.variants.find((v) => v.colorHex === hex && v.size === selectedSize) ||
-      product.variants.find((v) => v.colorHex === hex) ||
+      product.variants.find((v) => v.colorHex.toLowerCase() === hex.toLowerCase() && v.size === selectedSize) ||
+      product.variants.find((v) => v.colorHex.toLowerCase() === hex.toLowerCase()) ||
       product.variants[0];
     setSelectedVariant(matchingVariant);
   };
 
-  const handleSizeChange = (size: any) => {
+  const handleSizeChange = (size: string) => {
     setSelectedSize(size);
     const matchingVariant =
-      product.variants.find((v) => v.size === size && v.colorHex === selectedColorHex) ||
+      product.variants.find((v) => v.size === size && v.colorHex.toLowerCase() === selectedColorHex.toLowerCase()) ||
       product.variants.find((v) => v.size === size) ||
       product.variants[0];
     setSelectedVariant(matchingVariant);
   };
+
+  const handleBuyNow = () => {
+    for (let i = 0; i < quantity; i++) {
+      addToCart(product, selectedSize, selectedVariant.colorName, selectedColorHex);
+    }
+    navigate('/checkout');
+  };
+
+  const handleAddToBag = () => {
+    for (let i = 0; i < quantity; i++) {
+      addToCart(product, selectedSize, selectedVariant.colorName, selectedColorHex);
+    }
+  };
+
+  // Related products in the same or complementary categories
+  const relatedProducts = products
+    .filter((p) => p.id !== product.id)
+    .slice(0, 4);
 
   return (
     <div style={{ paddingTop: '96px', minHeight: '100vh', paddingBottom: '6rem' }}>
@@ -137,7 +183,7 @@ export const ProductDetailPage: React.FC = () => {
             <div
               className="glass-panel"
               style={{
-                height: '580px',
+                height: 'clamp(360px, 45vw, 560px)',
                 position: 'relative',
                 borderRadius: 'var(--radius-xl)',
                 overflow: 'hidden',
@@ -179,23 +225,20 @@ export const ProductDetailPage: React.FC = () => {
                     }}
                   >
                     <RotateCw size={13} />
-                    <span>Drag to Rotate 3D</span>
+                    <span>360° Interactive 3D</span>
                   </div>
                 </>
               ) : (
-                <FallbackGallery
-                  garmentType={product.category}
-                  garmentColorHex={selectedColorHex}
-                  garmentColorName={selectedVariant.colorName}
-                  images={product.images}
-                  productName={product.name}
-                  height="100%"
-                  onSwitchTo3D={() => setViewFormat('3d')}
-                  canSwitchTo3D={true}
-                />
+                <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+                  <img
+                    src={product.images[activeImageIndex] || product.images[0]}
+                    alt={product.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </div>
               )}
 
-              {/* Top Right Mode Toggle Switch (3D Atelier <-> 360° Studio Lookbook) */}
+              {/* Top Right Mode Toggle Switch (3D Atelier <-> Editorial Photo) */}
               <div
                 style={{
                   position: 'absolute',
@@ -247,26 +290,49 @@ export const ProductDetailPage: React.FC = () => {
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
                   }}
-                  title="High-Res 360° Multi-Angle Lookbook"
+                  title="Editorial High-Res Photo"
                 >
                   <Eye size={13} />
-                  <span>360° Photo</span>
+                  <span>Photo Gallery</span>
                 </button>
               </div>
             </div>
 
-            {/* Editorial Lookbook Angles */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginTop: '1rem' }}>
+            {/* Editorial Thumbnails */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', marginTop: '1rem' }}>
+              <div
+                onClick={() => setViewFormat('3d')}
+                style={{
+                  height: '80px',
+                  borderRadius: 'var(--radius-md)',
+                  background: 'var(--bg-card)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.25rem',
+                  cursor: 'pointer',
+                  border: viewFormat === '3d' ? '2px solid var(--accent-gold)' : '1px solid var(--border-subtle)',
+                  transition: 'all 0.2s ease',
+                  color: viewFormat === '3d' ? 'var(--accent-gold)' : 'var(--text-muted)',
+                }}
+              >
+                <Box size={20} />
+                <span style={{ fontSize: '0.68rem', fontWeight: 700 }}>3D Viewer</span>
+              </div>
               {product.images.map((img, idx) => (
                 <div
                   key={idx}
-                  onClick={() => setActiveImageIndex(idx)}
+                  onClick={() => {
+                    setActiveImageIndex(idx);
+                    setViewFormat('lookbook360');
+                  }}
                   style={{
-                    height: '110px',
+                    height: '80px',
                     borderRadius: 'var(--radius-md)',
                     overflow: 'hidden',
                     cursor: 'pointer',
-                    border: activeImageIndex === idx ? '2px solid var(--accent-gold)' : '1px solid var(--border-subtle)',
+                    border: viewFormat === 'lookbook360' && activeImageIndex === idx ? '2px solid var(--accent-gold)' : '1px solid var(--border-subtle)',
                     transition: 'all 0.2s ease',
                   }}
                 >
@@ -276,18 +342,24 @@ export const ProductDetailPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column: Garment Information & Sizing */}
+          {/* Right Column: Garment Information, Swatches, Sizing, CTA */}
           <div>
-            <div style={{ fontSize: '0.78rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--accent-gold)', fontWeight: 700 }}>
-              {product.brand}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
+              <span style={{ fontSize: '0.78rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--accent-gold)', fontWeight: 700 }}>
+                {product.brand} · {product.category.replace('-', ' ')}
+              </span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--status-success)', display: 'flex', alignItems: 'center', gap: '0.3rem', fontWeight: 600 }}>
+                <CheckCircle2 size={13} />
+                <span>{selectedVariant.stock > 0 ? `In Stock (${selectedVariant.stock} available)` : 'Bespoke Made to Order'}</span>
+              </span>
             </div>
 
-            <h1 className="font-display" style={{ fontSize: 'var(--font-size-h1)', color: 'var(--text-primary)', margin: '0.35rem 0 0.75rem 0', lineHeight: 1.15 }}>
+            <h1 className="font-display" style={{ fontSize: 'var(--font-size-h1)', color: 'var(--text-primary)', margin: '0.2rem 0 0.75rem 0', lineHeight: 1.15 }}>
               {product.name}
             </h1>
 
             {/* Price & Rating */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem' }}>
                 <span style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--accent-gold)' }}>
                   ₹{product.price.toLocaleString('en-IN')}
@@ -298,7 +370,7 @@ export const ProductDetailPage: React.FC = () => {
                   </span>
                 )}
                 {product.discountPercentage && (
-                  <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--status-success)', background: 'rgba(21,128,61,0.1)', padding: '0.2rem 0.6rem', borderRadius: '4px' }}>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--status-success)', background: 'rgba(21,128,61,0.1)', padding: '0.2rem 0.6rem', borderRadius: '4px' }}>
                     Save {product.discountPercentage}%
                   </span>
                 )}
@@ -311,12 +383,12 @@ export const ProductDetailPage: React.FC = () => {
               </div>
             </div>
 
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.975rem', lineHeight: 1.68, marginBottom: '2rem' }}>
-              {product.description}
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.65, marginBottom: '1.5rem' }}>
+              {product.shortDescription || product.description}
             </p>
 
             {/* Color Swatches */}
-            <div style={{ marginBottom: '1.75rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '1.5rem' }}>
+            <div style={{ marginBottom: '1.5rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '1.25rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                 <label style={{ fontSize: '0.825rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-primary)' }}>
                   Shade: <span style={{ color: 'var(--accent-gold)' }}>{selectedVariant.colorName}</span>
@@ -334,13 +406,13 @@ export const ProductDetailPage: React.FC = () => {
                   }}
                 >
                   <Sparkles size={13} />
-                  <span>Will this suit my tone?</span>
+                  <span>Color analysis</span>
                 </Link>
               </div>
 
               <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                 {uniqueColors.map((color) => {
-                  const isSelected = selectedColorHex === color.hex;
+                  const isSelected = selectedColorHex.toLowerCase() === color.hex.toLowerCase();
                   return (
                     <button
                       key={color.hex}
@@ -364,7 +436,7 @@ export const ProductDetailPage: React.FC = () => {
             </div>
 
             {/* Size Selector */}
-            <div style={{ marginBottom: '2rem' }}>
+            <div style={{ marginBottom: '1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                 <label style={{ fontSize: '0.825rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-primary)' }}>
                   Select Size
@@ -397,7 +469,7 @@ export const ProductDetailPage: React.FC = () => {
                       onClick={() => handleSizeChange(size)}
                       style={{
                         minWidth: '54px',
-                        height: '46px',
+                        height: '44px',
                         borderRadius: 'var(--radius-sm)',
                         background: isSelected ? 'var(--text-primary)' : 'var(--bg-card)',
                         color: isSelected ? 'var(--bg-primary)' : 'var(--text-primary)',
@@ -415,30 +487,85 @@ export const ProductDetailPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Action Buttons: Add to Bag & Wishlist */}
-            <div style={{ display: 'flex', gap: '1rem', marginBottom: '2.5rem' }}>
-              <button
-                onClick={() => {
-                  addToCart(
-                    product,
-                    selectedSize,
-                    selectedVariant.colorName,
-                    selectedColorHex
-                  );
+            {/* Quantity Selector */}
+            <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <label style={{ fontSize: '0.825rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-primary)' }}>
+                Quantity:
+              </label>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  border: '1px solid var(--border-light)',
+                  borderRadius: 'var(--radius-sm)',
+                  background: 'var(--bg-card)',
                 }}
-                className="btn btn-gold"
-                style={{ flex: 1, padding: '1rem 2rem', fontSize: '1rem' }}
               >
-                <ShoppingBag size={19} />
-                <span>Add to Shopping Bag</span>
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    background: 'none',
+                    border: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    color: 'var(--text-primary)',
+                  }}
+                  disabled={quantity <= 1}
+                >
+                  <Minus size={14} />
+                </button>
+                <span style={{ width: '40px', textAlign: 'center', fontWeight: 700, fontSize: '0.9rem' }}>
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    background: 'none',
+                    border: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    color: 'var(--text-primary)',
+                  }}
+                >
+                  <Plus size={14} />
+                </button>
+              </div>
+            </div>
+
+            {/* Primary Action Buttons: Add to Bag, Buy Now, Wishlist */}
+            <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
+              <button
+                onClick={handleAddToBag}
+                className="btn btn-outline"
+                style={{ flex: 1, minWidth: '160px', padding: '0.9rem 1.5rem', fontSize: '0.95rem', fontWeight: 700 }}
+              >
+                <ShoppingBag size={18} />
+                <span>Add to Bag</span>
+              </button>
+
+              <button
+                onClick={handleBuyNow}
+                className="btn btn-gold"
+                style={{ flex: 1.2, minWidth: '180px', padding: '0.9rem 1.5rem', fontSize: '0.95rem', fontWeight: 700 }}
+              >
+                <Zap size={18} />
+                <span>Buy Now</span>
               </button>
 
               <button
                 onClick={() => toggleWishlist(product.id)}
                 className="btn btn-outline"
                 style={{
-                  width: '54px',
-                  height: '54px',
+                  width: '50px',
+                  height: '50px',
                   padding: 0,
                   color: inWishlist ? '#ef4444' : 'var(--text-primary)',
                 }}
@@ -449,18 +576,18 @@ export const ProductDetailPage: React.FC = () => {
             </div>
 
             {/* Guarantees Strip */}
-            <div className="responsive-guarantees-grid" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1.5rem', marginBottom: '2rem' }}>
+            <div className="responsive-guarantees-grid" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1.25rem', marginBottom: '1.75rem' }}>
               <div style={{ textAlign: 'center' }}>
-                <Truck size={20} color="var(--accent-gold)" style={{ margin: '0 auto 0.35rem auto' }} />
-                <div style={{ fontSize: '0.75rem', fontWeight: 700 }}>Complimentary Express Shipping</div>
+                <Truck size={18} color="var(--accent-gold)" style={{ margin: '0 auto 0.25rem auto' }} />
+                <div style={{ fontSize: '0.72rem', fontWeight: 700 }}>Complimentary Express Courier</div>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <ShieldCheck size={20} color="var(--accent-gold)" style={{ margin: '0 auto 0.35rem auto' }} />
-                <div style={{ fontSize: '0.75rem', fontWeight: 700 }}>100% Organic Yarns</div>
+                <ShieldCheck size={18} color="var(--accent-gold)" style={{ margin: '0 auto 0.25rem auto' }} />
+                <div style={{ fontSize: '0.72rem', fontWeight: 700 }}>100% Certified Organic Cotton</div>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <RotateCw size={20} color="var(--accent-gold)" style={{ margin: '0 auto 0.35rem auto' }} />
-                <div style={{ fontSize: '0.75rem', fontWeight: 700 }}>30-Day Hassle-Free Returns</div>
+                <RotateCw size={18} color="var(--accent-gold)" style={{ margin: '0 auto 0.25rem auto' }} />
+                <div style={{ fontSize: '0.72rem', fontWeight: 700 }}>30-Day Hassle-Free Returns</div>
               </div>
             </div>
 
@@ -471,7 +598,7 @@ export const ProductDetailPage: React.FC = () => {
                   onClick={() => setActiveAccordion(activeAccordion === 'fabric' ? null : 'fabric')}
                   style={{
                     width: '100%',
-                    padding: '1.1rem 0',
+                    padding: '1rem 0',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
@@ -479,17 +606,47 @@ export const ProductDetailPage: React.FC = () => {
                     border: 'none',
                     color: 'var(--text-primary)',
                     fontWeight: 700,
-                    fontSize: '0.9rem',
+                    fontSize: '0.88rem',
                     cursor: 'pointer',
                   }}
                 >
-                  <span>Fabric & Care Specifications</span>
+                  <span>Fabric, Weaving & Craftsmanship</span>
                   {activeAccordion === 'fabric' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </button>
                 {activeAccordion === 'fabric' && (
                   <div style={{ paddingBottom: '1.25rem', color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.6 }}>
-                    <p style={{ marginBottom: '0.5rem' }}><strong>Material:</strong> {product.fabricDetails}</p>
-                    <p><strong>Care:</strong> {product.careInstructions}</p>
+                    <p style={{ marginBottom: '0.5rem' }}><strong>Material:</strong> {product.fabricDetails || '100% Long-Staple Peruvian Supima Cotton (300 GSM)'}</p>
+                    <p style={{ marginBottom: '0.5rem' }}><strong>Weave:</strong> High-density compact knit with bio-polished combed surface.</p>
+                    <p><strong>Care Instructions:</strong> {product.careInstructions || 'Machine wash cold with gentle detergent. Lay flat to dry.'}</p>
+                  </div>
+                )}
+              </div>
+
+              <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                <button
+                  onClick={() => setActiveAccordion(activeAccordion === 'shipping' ? null : 'shipping')}
+                  style={{
+                    width: '100%',
+                    padding: '1rem 0',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--text-primary)',
+                    fontWeight: 700,
+                    fontSize: '0.88rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <span>Shipping, Delivery & Returns</span>
+                  {activeAccordion === 'shipping' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button>
+                {activeAccordion === 'shipping' && (
+                  <div style={{ paddingBottom: '1.25rem', color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.6 }}>
+                    <p style={{ marginBottom: '0.5rem' }}><strong>Dispatch:</strong> Orders placed before 2:00 PM IST ship the same business day.</p>
+                    <p style={{ marginBottom: '0.5rem' }}><strong>Transit Time:</strong> 2–4 business days across India with full live GPS courier tracking.</p>
+                    <p><strong>Return Guarantee:</strong> 30-day complimentary doorstep exchanges and full refunds.</p>
                   </div>
                 )}
               </div>
@@ -498,12 +655,39 @@ export const ProductDetailPage: React.FC = () => {
         </div>
 
         {/* Customer Reviews & Star Ratings */}
-        <ReviewSection
-          productId={product.id}
-          productName={product.name}
-          initialRating={product.rating}
-          initialReviewCount={product.reviewCount}
-        />
+        <div style={{ marginTop: '4rem' }}>
+          <ReviewSection
+            productId={product.id}
+            productName={product.name}
+            initialRating={product.rating}
+            initialReviewCount={product.reviewCount}
+          />
+        </div>
+
+        {/* Related / Recommended Haute Couture Creations */}
+        {relatedProducts.length > 0 && (
+          <div style={{ marginTop: '5rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '3rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem' }}>
+              <div>
+                <span style={{ fontSize: '0.75rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--accent-gold)', fontWeight: 700 }}>
+                  Curated Ensemble
+                </span>
+                <h2 className="font-display" style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)', color: 'var(--text-primary)', marginTop: '0.25rem' }}>
+                  Related Creations
+                </h2>
+              </div>
+              <Link to="/catalog" className="btn btn-outline" style={{ padding: '0.4rem 1rem', fontSize: '0.8rem' }}>
+                View All
+              </Link>
+            </div>
+
+            <div className="product-catalog-grid">
+              {relatedProducts.map((relProd) => (
+                <ProductCard3D key={relProd.id} product={relProd} />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Size Guide Modal */}
         {isSizeGuideOpen && (
@@ -579,3 +763,4 @@ export const ProductDetailPage: React.FC = () => {
     </div>
   );
 };
+
