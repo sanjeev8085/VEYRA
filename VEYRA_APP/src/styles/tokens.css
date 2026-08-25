@@ -1,0 +1,131 @@
+/**
+ * VEYRA Luxury Fashion — Master Design Tokens (tokens.css)
+ * Authoritative CSS Custom Properties specification
+ */
+
+:root, [data-theme="light"] {
+  /* Atmosphere & Surfaces */
+  --bg-dark: #09090b;
+  --bg-cream: #fdfcf9;
+  --bg-primary: #fdfcf9;
+  --bg-secondary: #f4efe6;
+  --bg-card: rgba(255, 255, 255, 0.88);
+  --bg-card-hover: #ffffff;
+  --bg-glass: rgba(253, 252, 249, 0.78);
+  --bg-overlay: rgba(20, 20, 26, 0.6);
+
+  /* Typography Colors */
+  --text-primary: #1a1a1a;
+  --text-secondary: #57524a;
+  --text-muted: #8c857b;
+  --text-gold: #c59b27;
+  --text-on-dark: #ffffff;
+  --text-on-cream: #1a1a1a;
+
+  /* Luxury Accents & Metallics */
+  --accent-gold: #c59b27;
+  --accent-gold-alt: #d4af37;
+  --accent-gold-light: #e8d3a2;
+  --accent-gold-dark: #aa820a;
+  --accent-platinum: #e5e4e2;
+
+  /* Curated Fabric Swatches */
+  --color-botanical-sage: #7b8b7b;
+  --color-terracotta: #c86d51;
+  --color-capri-blue: #4a7c9b;
+  --color-vintage-burgundy: #6b2d38;
+  --color-midnight-navy: #1b263b;
+  --color-sand: #d8caa8;
+
+  /* Glassmorphic Surfaces */
+  --glass-panel-bg: rgba(253, 252, 249, 0.85);
+  --glass-panel-blur: blur(16px);
+  --glass-panel-border: 1px solid rgba(197, 155, 39, 0.18);
+  --border-subtle: rgba(40, 35, 28, 0.08);
+  --border-light: rgba(40, 35, 28, 0.14);
+  --border-gold: rgba(197, 155, 39, 0.35);
+
+  /* Typography Families */
+  --font-display: 'Playfair Display', 'Cinzel', 'Syne', serif;
+  --font-serif: 'Playfair Display', serif;
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  /* Responsive 3D Card Heights */
+  --card-height-xl: 280px;   /* ≥1200px (4 cols) */
+  --card-height-lg: 260px;   /* 900–1199px (3 cols) */
+  --card-height-md: 240px;   /* 361–899px (2 cols) */
+  --card-height-sm: 220px;   /* ≤360px (1 col) */
+  --product-card-canvas-height: 280px;
+
+  /* Status Colors */
+  --status-success: #15803d;
+  --status-warning: #b45309;
+  --status-error: #dc2626;
+  --status-info: #2563eb;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 5rem;
+
+  /* Shadows & Easing */
+  --shadow-luxury: 0 12px 40px rgba(0, 0, 0, 0.08);
+  --glow-gold: 0 0 25px rgba(197, 155, 39, 0.2);
+  --ease-luxury: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] {
+  --bg-primary: #09090b;
+  --bg-secondary: #121217;
+  --bg-card: rgba(20, 20, 26, 0.75);
+  --bg-card-hover: rgba(30, 30, 40, 0.9);
+  --bg-glass: rgba(14, 14, 18, 0.8);
+  --bg-overlay: rgba(5, 5, 8, 0.85);
+
+  --text-primary: #ffffff;
+  --text-secondary: #c2bdb4;
+  --text-muted: #807c74;
+  --text-gold: #d4af37;
+
+  --glass-panel-bg: rgba(20, 20, 26, 0.65);
+  --glass-panel-blur: blur(16px);
+  --glass-panel-border: 1px solid rgba(197, 155, 39, 0.15);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-light: rgba(255, 255, 255, 0.15);
+  --border-gold: rgba(212, 175, 55, 0.35);
+
+  --shadow-luxury: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+/* Responsive Card Heights & Media Queries */
+@media (min-width: 1200px) {
+  :root {
+    --product-card-canvas-height: var(--card-height-xl);
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1199px) {
+  :root {
+    --product-card-canvas-height: var(--card-height-lg);
+  }
+}
+
+@media (min-width: 361px) and (max-width: 899px) {
+  :root {
+    --product-card-canvas-height: var(--card-height-md);
+  }
+}
+
+@media (max-width: 360px) {
+  :root {
+    --product-card-canvas-height: var(--card-height-sm);
+  }
+}

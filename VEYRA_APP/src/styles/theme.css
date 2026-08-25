@@ -1,3 +1,5 @@
+@import './tokens.css';
+
 :root, [data-theme="light"] {
   /* Ultra-Luxury Warm Light Editorial Palette (DEFAULT) */
   --bg-primary: #faf8f5;
