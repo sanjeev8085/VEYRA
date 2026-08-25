@@ -6,6 +6,7 @@ import './styles/theme.css';
 import './styles/responsive.css';
 import './styles/accessibility.css';
 import './styles/luxuryEffects.css';
+import './utils/visualOverflowDetector';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

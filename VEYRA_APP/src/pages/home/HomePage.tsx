@@ -303,9 +303,8 @@ export const HomePage: React.FC = () => {
                 <span>Atelier Color Consultation</span>
               </div>
 
-              <h2 className="font-display" style={{ fontSize: 'var(--font-size-h2)', color: 'var(--text-primary)', lineHeight: 1.15, marginBottom: '1rem' }}>
-                Wardrobe Shades Tailored <br />
-                to Your Natural Tone
+              <h2 className="font-display" style={{ fontSize: 'var(--font-size-h2)', color: 'var(--text-primary)', lineHeight: 1.18, marginBottom: '1rem' }}>
+                Wardrobe Shades Tailored to Your Natural Tone
               </h2>
 
               <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.65, marginBottom: '1.75rem' }}>
@@ -316,19 +315,19 @@ export const HomePage: React.FC = () => {
                 to="/find-your-colors"
                 className="btn btn-gold"
                 style={{
-                  padding: '0.75rem clamp(1rem, 2.5vw, 1.5rem)',
-                  width: 'fit-content',
-                  maxWidth: '100%',
+                  padding: '0.8rem 1.25rem',
+                  width: '100%',
+                  maxWidth: '340px',
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   textAlign: 'center',
-                  marginBottom: '1rem',
+                  marginBottom: '1.25rem',
                   boxSizing: 'border-box',
                 }}
               >
-                <Camera size={17} />
-                <span>Explore Your Color Palette</span>
+                <Camera size={18} style={{ flexShrink: 0 }} />
+                <span>Begin Your Style Consultation</span>
               </Link>
             </div>
 

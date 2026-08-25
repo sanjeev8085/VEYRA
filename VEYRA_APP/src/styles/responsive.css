@@ -109,7 +109,7 @@ img, video, canvas, svg {
   gap: 1.5rem;
 }
 
-/* Palette Swatch Matrix Grid (Desktop: 3 col, Mobile: 2 col) */
+/* Palette Swatch Matrix Grid (Desktop: 3 col, Mobile: 2 col, Micro Mobile: 1-2 col) */
 .home-palette-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -119,6 +119,13 @@ img, video, canvas, svg {
   box-sizing: border-box;
 }
 
+.home-palette-grid > * {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
 @media (max-width: 767px) {
   .home-palette-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
@@ -126,9 +133,9 @@ img, video, canvas, svg {
   }
 }
 
-@media (max-width: 360px) {
+@media (max-width: 350px) {
   .home-palette-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns: 1fr !important;
     gap: 0.5rem !important;
   }
 }
