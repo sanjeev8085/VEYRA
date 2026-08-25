@@ -38,15 +38,27 @@ const GLBViewer: React.FC<{ url: string; colorHex: string }> = ({ url, colorHex 
         mesh.receiveShadow = true;
 
         if (mesh.material) {
-          const nodeName = mesh.name.toLowerCase();
+          const nodeName = (mesh.name || '').toLowerCase();
+          const isGoldAccent =
+            nodeName.includes('logo') ||
+            nodeName.includes('gold') ||
+            nodeName.includes('tag') ||
+            nodeName.includes('piping') ||
+            nodeName.includes('label');
 
-          if (nodeName.includes('collar') || nodeName.includes('hem')) {
+          if (isGoldAccent) {
+            mesh.material = new THREE.MeshStandardMaterial({
+              color: new THREE.Color('#d4af37'),
+              roughness: 0.25,
+              metalness: 0.85,
+            });
+          } else if (nodeName.includes('collar') || nodeName.includes('hem') || nodeName.includes('ribbed')) {
             mesh.material = new THREE.MeshStandardMaterial({
               color: ribColor,
               roughness: 0.85,
               metalness: 0.01,
             });
-          } else if (!nodeName.includes('label')) {
+          } else {
             mesh.material = new THREE.MeshStandardMaterial({
               color: primaryColor,
               roughness: 0.65,
