@@ -298,13 +298,23 @@ export const AddProductWizard: React.FC = () => {
             </h1>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
             <button
               onClick={() => handleSaveProduct('draft')}
               className="btn btn-outline"
               style={{ padding: '0.6rem 1.25rem', fontSize: '0.825rem' }}
             >
               Save as Draft
+            </button>
+            <button
+              onClick={() => handleSaveProduct('published')}
+              className="btn btn-gold"
+              style={{ padding: '0.6rem 1.4rem', fontSize: '0.825rem' }}
+              disabled={validationErrors.length > 0}
+              title={validationErrors.length > 0 ? validationErrors.join(', ') : 'Publish product immediately'}
+            >
+              <CheckCircle2 size={15} />
+              <span>Publish Product</span>
             </button>
           </div>
         </div>
