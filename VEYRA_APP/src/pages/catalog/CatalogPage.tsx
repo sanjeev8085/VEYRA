@@ -137,13 +137,14 @@ export const CatalogPage: React.FC = () => {
         <div
           className="glass-panel"
           style={{
-            padding: '1.25rem 1.5rem',
+            padding: 'clamp(1rem, 2.5vw, 1.5rem)',
             marginBottom: '3rem',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             flexWrap: 'wrap',
-            gap: '1.5rem',
+            gap: '1.25rem',
+            overflow: 'hidden',
           }}
         >
           {/* Color Swatch Filter Chips */}
@@ -200,11 +201,11 @@ export const CatalogPage: React.FC = () => {
           {/* Size & Sorting Controls */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
             {/* Fit Filter */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
               <span style={{ fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>
                 Fit:
               </span>
-              <div style={{ display: 'flex', gap: '0.3rem' }}>
+              <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
                 {['all', 'Relaxed', 'Regular', 'Oversized'].map((f) => (
                   <button
                     key={f}

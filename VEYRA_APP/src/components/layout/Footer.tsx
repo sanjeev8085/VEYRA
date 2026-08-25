@@ -114,14 +114,14 @@ export const Footer: React.FC = () => {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'minmax(280px, 1.5fr) repeat(auto-fit, minmax(160px, 1fr))',
-            gap: '3rem',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: 'clamp(1.5rem, 3.5vw, 3rem)',
             paddingBottom: '3.5rem',
             borderBottom: '1px solid var(--border-subtle)',
           }}
         >
           {/* Brand Info & Newsletter */}
-          <div>
+          <div style={{ minWidth: 0, maxWidth: '100%' }}>
             <span className="font-display gold-gradient-text" style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '0.2em' }}>
               VEYRA
             </span>

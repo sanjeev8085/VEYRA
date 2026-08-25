@@ -69,14 +69,14 @@ export const TrackOrderPage: React.FC = () => {
         </div>
 
         {/* Search Bar */}
-        <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.75rem', marginBottom: '3rem' }}>
+        <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.75rem', marginBottom: '3rem', flexWrap: 'wrap' }}>
           <input
             type="text"
             placeholder="Enter Order # (e.g. #ORD-10025) or Tracking Number"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
-              flex: 1,
+              flex: '1 1 240px',
               background: 'rgba(255, 255, 255, 0.05)',
               border: '1px solid var(--border-light)',
               borderRadius: 'var(--radius-sm)',
@@ -84,6 +84,7 @@ export const TrackOrderPage: React.FC = () => {
               color: '#fff',
               fontSize: '0.95rem',
               outline: 'none',
+              minWidth: 0,
             }}
           />
           <button type="submit" className="btn btn-gold" style={{ padding: '0.85rem 1.75rem' }}>
@@ -93,7 +94,7 @@ export const TrackOrderPage: React.FC = () => {
         </form>
 
         {activeOrder && (
-          <div className="glass-panel" style={{ padding: '2.5rem' }}>
+          <div className="glass-panel" style={{ padding: 'clamp(1.25rem, 3.5vw, 2.5rem)', overflow: 'hidden' }}>
             {/* Header info */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '1.5rem', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
@@ -102,7 +103,7 @@ export const TrackOrderPage: React.FC = () => {
               </div>
               <div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Carrier & Tracking</div>
-                <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#fff' }}>
+                <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#fff', wordBreak: 'break-all' }}>
                   {activeOrder.courierName} ({activeOrder.trackingNumber})
                 </div>
               </div>

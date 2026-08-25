@@ -122,10 +122,11 @@ export const FindYourColorsPage: React.FC = () => {
           <div
             className="glass-panel"
             style={{
-              padding: '3.5rem 2rem',
+              padding: 'clamp(1.5rem, 4vw, 3.5rem) clamp(1rem, 3vw, 2rem)',
               textAlign: 'center',
               maxWidth: '720px',
               margin: '0 auto 3rem auto',
+              overflow: 'hidden',
             }}
           >
             {isAnalyzing ? (
@@ -177,10 +178,10 @@ export const FindYourColorsPage: React.FC = () => {
                   <button
                     onClick={() => fileInputRef.current?.click()}
                     className="btn btn-gold"
-                    style={{ padding: '0.85rem 2rem' }}
+                    style={{ padding: '0.85rem 1.75rem', maxWidth: '100%' }}
                   >
                     <Upload size={18} />
-                    <span>Upload Photo (JPG, PNG, WEBP)</span>
+                    <span>Upload Portrait Photo</span>
                   </button>
                   <input
                     ref={fileInputRef}
@@ -199,7 +200,7 @@ export const FindYourColorsPage: React.FC = () => {
                   <span style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-muted)', display: 'block', marginBottom: '1.25rem' }}>
                     Or Try Instant Sample Complexions
                   </span>
-                  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
                     {sampleProfiles.map((sample) => (
                       <div
                         key={sample.label}
@@ -213,6 +214,7 @@ export const FindYourColorsPage: React.FC = () => {
                           padding: '0.5rem',
                           borderRadius: 'var(--radius-md)',
                           transition: 'all 0.2s ease',
+                          minWidth: '70px',
                         }}
                         className="glass-card"
                       >
@@ -220,14 +222,14 @@ export const FindYourColorsPage: React.FC = () => {
                           src={sample.img}
                           alt={sample.label}
                           style={{
-                            width: 60,
-                            height: 60,
+                            width: 54,
+                            height: 54,
                             borderRadius: '50%',
                             objectFit: 'cover',
                             border: '2px solid var(--border-light)',
                           }}
                         />
-                        <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                        <span style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                           {sample.label}
                         </span>
                       </div>
@@ -244,14 +246,12 @@ export const FindYourColorsPage: React.FC = () => {
           <div>
             {/* Consultation Overview Card */}
             <div
-              className="glass-panel studio-grid"
+              className="glass-panel responsive-grid-hero"
               style={{
-                padding: '2.5rem',
+                padding: 'clamp(1.25rem, 3.5vw, 2.5rem)',
                 marginBottom: '3.5rem',
-                display: 'grid',
-                gridTemplateColumns: 'minmax(200px, 280px) 1fr',
-                gap: '2.5rem',
                 alignItems: 'center',
+                overflow: 'hidden',
               }}
             >
               {/* Left Photo & Tone Badge */}
