@@ -666,7 +666,7 @@ export const useStore = create<VeyraState>()(
         })),
     }),
     {
-      name: 'veyra-storage-v4',
+      name: 'veyra-storage-v5',
       partialize: (state) => ({
         cart: state.cart,
         wishlist: state.wishlist,

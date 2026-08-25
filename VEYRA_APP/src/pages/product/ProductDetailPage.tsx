@@ -124,6 +124,7 @@ export const ProductDetailPage: React.FC = () => {
                   <ThreeCanvas
                     garmentType={product.category}
                     garmentColorHex={selectedColorHex}
+                    modelUrl={product.threeDClothingUrl || './models/garments/veyra_signature_tshirt.glb'}
                     isFemale={false}
                   />
 

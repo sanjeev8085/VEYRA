@@ -28,7 +28,7 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
   garmentType = 't-shirts',
   garmentColorHex,
   overrideColor,
-  modelUrl,
+  modelUrl = './models/garments/veyra_signature_tshirt.glb',
   autoRotate,
   interactive = true,
   avatarId,

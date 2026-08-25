@@ -158,7 +158,7 @@ export const SEED_PRODUCTS: Product[] = [
       'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=1000&q=85',
       'https://images.unsplash.com/photo-1562157873-818bc0726f68?w=1000&q=85',
     ],
-    threeDClothingUrl: '/models/garments/essential_crew.glb',
+    threeDClothingUrl: './models/garments/veyra_signature_tshirt.glb',
     compatibleAvatarIds: ['avatar-male-01', 'avatar-male-02', 'avatar-female-01', 'avatar-female-02'],
     variants: [
       { id: 'ec_1', size: 'S', colorName: 'Botanical Sage', colorHex: '#6c8a66', sku: 'VYR-EC-SGE-S', stock: 12 },
@@ -197,7 +197,7 @@ export const SEED_PRODUCTS: Product[] = [
       'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=1000&q=85',
       'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=1000&q=85',
     ],
-    threeDClothingUrl: '/models/garments/oversized_tee.glb',
+    threeDClothingUrl: './models/garments/veyra_signature_tshirt.glb',
     compatibleAvatarIds: ['avatar-male-01', 'avatar-male-02', 'avatar-female-01'],
     variants: [
       { id: 'ot_1', size: 'S', colorName: 'Earthy Terracotta', colorHex: '#c45b38', sku: 'VYR-OST-TER-S', stock: 9 },
@@ -233,7 +233,7 @@ export const SEED_PRODUCTS: Product[] = [
       'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=1000&q=85',
       'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=1000&q=85',
     ],
-    threeDClothingUrl: '/models/garments/relaxed_tee.glb',
+    threeDClothingUrl: './models/garments/veyra_signature_tshirt.glb',
     compatibleAvatarIds: ['avatar-male-01', 'avatar-male-02', 'avatar-female-01', 'avatar-female-02'],
     variants: [
       { id: 'pr_1', size: 'S', colorName: 'Sunlit Coral', colorHex: '#d96b58', sku: 'VYR-PRT-CRL-S', stock: 8 },
@@ -269,7 +269,7 @@ export const SEED_PRODUCTS: Product[] = [
       'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=1000&q=85',
       'https://images.unsplash.com/photo-1562157873-818bc0726f68?w=1000&q=85',
     ],
-    threeDClothingUrl: '/models/garments/heavy_tee.glb',
+    threeDClothingUrl: './models/garments/veyra_signature_tshirt.glb',
     compatibleAvatarIds: ['avatar-male-01', 'avatar-male-02'],
     variants: [
       { id: 'sh_1', size: 'M', colorName: 'Vintage Burgundy', colorHex: '#722f37', sku: 'VYR-SHT-BUR-M', stock: 14 },
@@ -304,7 +304,7 @@ export const SEED_PRODUCTS: Product[] = [
       'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=1000&q=85',
       'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=1000&q=85',
     ],
-    threeDClothingUrl: '/models/garments/classic_tee.glb',
+    threeDClothingUrl: './models/garments/veyra_signature_tshirt.glb',
     compatibleAvatarIds: ['avatar-male-01', 'avatar-male-02', 'avatar-female-01', 'avatar-female-02'],
     variants: [
       { id: 'cf_1', size: 'S', colorName: 'Ivory Linen', colorHex: '#faf8f5', sku: 'VYR-CFT-IVO-S', stock: 20 },
@@ -342,7 +342,7 @@ export const SEED_PRODUCTS: Product[] = [
       'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1000&q=85',
       'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=1000&q=85',
     ],
-    threeDClothingUrl: '/models/garments/oxford_shirt.glb',
+    threeDClothingUrl: './models/garments/veyra_signature_tshirt.glb',
     compatibleAvatarIds: ['avatar-male-01', 'avatar-male-02', 'avatar-female-01'],
     variants: [
       { id: 'ox_1', size: 'S', colorName: 'Capri Sky Blue', colorHex: '#4a7c9f', sku: 'VYR-OXS-SKY-S', stock: 10 },
@@ -378,7 +378,7 @@ export const SEED_PRODUCTS: Product[] = [
       'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=1000&q=85',
       'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1000&q=85',
     ],
-    threeDClothingUrl: '/models/garments/linen_resort.glb',
+    threeDClothingUrl: './models/garments/veyra_signature_tshirt.glb',
     compatibleAvatarIds: ['avatar-male-01', 'avatar-male-02', 'avatar-female-01', 'avatar-female-02'],
     variants: [
       { id: 'ln_1', size: 'S', colorName: 'Earthy Terracotta', colorHex: '#c45b38', sku: 'VYR-LRS-TER-S', stock: 11 },
@@ -416,7 +416,7 @@ export const SEED_PRODUCTS: Product[] = [
       'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=1000&q=85',
       'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1000&q=85',
     ],
-    threeDClothingUrl: '/models/garments/casual_shirt.glb',
+    threeDClothingUrl: './models/garments/veyra_signature_tshirt.glb',
     compatibleAvatarIds: ['avatar-male-01', 'avatar-male-02'],
     variants: [
       { id: 'pc_1', size: 'S', colorName: 'Capri Sky Blue', colorHex: '#4a7c9f', sku: 'VYR-PCS-SKY-S', stock: 8 },
@@ -450,7 +450,7 @@ export const SEED_PRODUCTS: Product[] = [
       'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=1000&q=85',
       'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=1000&q=85',
     ],
-    threeDClothingUrl: '/models/garments/cuban_shirt.glb',
+    threeDClothingUrl: './models/garments/veyra_signature_tshirt.glb',
     compatibleAvatarIds: ['avatar-male-01', 'avatar-male-02', 'avatar-female-01', 'avatar-female-02'],
     variants: [
       { id: 'rf_1', size: 'S', colorName: 'Botanical Sage', colorHex: '#6c8a66', sku: 'VYR-RFS-SGE-S', stock: 14 },
@@ -487,7 +487,7 @@ export const SEED_PRODUCTS: Product[] = [
       'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=1000&q=85',
       'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1000&q=85',
     ],
-    threeDClothingUrl: '/models/garments/formal_shirt.glb',
+    threeDClothingUrl: './models/garments/veyra_signature_tshirt.glb',
     compatibleAvatarIds: ['avatar-male-01', 'avatar-male-02'],
     variants: [
       { id: 'ef_1', size: 'S', colorName: 'Ivory Linen', colorHex: '#faf8f5', sku: 'VYR-EFS-IVO-S', stock: 15 },
